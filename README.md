@@ -15,7 +15,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/open-notebook.xml \
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select **open-notebook** (it may appear as `open-notebook.xml`), then review/save.
 5. Before starting the container, set required values:
-   - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique secret string
+   - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
 
 ## Included templates
