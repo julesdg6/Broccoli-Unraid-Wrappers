@@ -169,6 +169,8 @@ open_notebook:
   url: http://<host>:5056/mcp
 ```
 
+Replace `<host>` with your Unraid server IP or hostname (for example `192.168.1.100`).
+
 ## `broccoli_surrealdb` deployment notes
 
 ### First-run: directory permissions
