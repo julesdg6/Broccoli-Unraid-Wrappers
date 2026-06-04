@@ -270,7 +270,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png" alt="broccoli_open-notebook icon" width="64">
 
 - Template: `templates/broccoli_open-notebook.xml`
-- Container image: `lfnovo/open_notebook:v1-latest`
+- Container image: `lfnovo/open_notebook:pr-716`
 - Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
 
 ### `broccoli_surrealdb`
