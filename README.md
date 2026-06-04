@@ -270,15 +270,15 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png" alt="broccoli_open-notebook icon" width="64">
 
 - Template: `templates/broccoli_open-notebook.xml`
-- Container image: `lfnovo/open_notebook:pr-716`
+- Container image: `lfnovo/open_notebook:latest`
 - Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
 
 ### `broccoli_surrealdb`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/surrealdb.png" alt="broccoli_surrealdb icon" width="64">
 
 - Template: `templates/broccoli_surrealdb.xml`
-- Container image: `surrealdb/surrealdb:latest`
-- SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting. IMPORTANT: SurrealDB runs as a non-root user (UID 65532). Before starting the container for the first time, run on your Unraid host: mkdir -p /mnt/user/appdata/broccoli_surrealdb && chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
+- Container image: `surrealdb/surrealdb:v2.6.5`
+- SurrealDB database service for apps like Open Notebook. Pinned to v2.6.5 (SurrealDB 3.x is not yet compatible with Open Notebook). Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting. IMPORTANT: SurrealDB runs as a non-root user (UID 65532). Before starting the container for the first time, run on your Unraid host: mkdir -p /mnt/user/appdata/broccoli_surrealdb && chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
 
 <!-- TEMPLATES:END -->
 
