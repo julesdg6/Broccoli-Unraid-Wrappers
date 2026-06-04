@@ -16,7 +16,7 @@
   <Icon>https://raw.githubusercontent.com/surrealdb/icons/main/surrealdb.svg</Icon>
   <PostArgs>start</PostArgs>
 
-  <Config Name="HTTP / RPC Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 — SurrealDB HTTP + WebSocket RPC endpoint (/rpc)." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+  <Config Name="HTTP / RPC Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 - SurrealDB HTTP + WebSocket RPC endpoint (/rpc)." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
 
   <Config Name="AppData" Target="/data" Default="/mnt/user/appdata/broccoli_surrealdb" Mode="rw" Description="Persistent SurrealDB storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_surrealdb</Config>
 
