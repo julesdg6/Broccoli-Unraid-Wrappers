@@ -38,20 +38,19 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/mcp-google-map.xml \
 <!-- TEMPLATES:START -->
 This repository provides Unraid Docker templates and matching icons for self-hosted apps.
 
+### `mcp-google-map`
+![mcp-google-map icon](https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png)
+
+- Template: `templates/mcp-google-map.xml`
+- Container image: `node:20-alpine`
+- MCP server providing 18 Google Maps tools for AI agents — geocode, search, directions, weather, air quality, local rank tracking, and more. Exposes a Streamable HTTP MCP endpoint at /mcp for use with Claude Desktop, Cursor, VS Code, and other MCP clients. Requires a Google Maps API key with Places API (New) and Routes API enabled.
+
 ### `open-notebook`
 ![open-notebook icon](https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png)
 
 - Template: `templates/open-notebook.xml`
 - Container image: `lfnovo/open_notebook:v1-latest`
 - Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
-
-### `mcp-google-map`
-![mcp-google-map icon](https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png)
-
-- Template: `templates/mcp-google-map.xml`
-- Container image: `node:20-alpine` (runs `@cablate/mcp-google-map` via npx)
-- MCP server providing 18 Google Maps tools for AI agents — geocode, search, directions, weather, air quality, local rank tracking, and more. Exposes a Streamable HTTP endpoint on port 3020 at `/mcp`.
-- **Requires**: A Google Maps API key with **Places API (New)** and **Routes API** enabled in [Google Cloud Console](https://console.cloud.google.com).
 
 <!-- TEMPLATES:END -->
 
