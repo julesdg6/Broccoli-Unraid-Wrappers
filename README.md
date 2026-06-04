@@ -54,6 +54,40 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    **broccoli_surrealdb:**
    - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
    - `SURREAL_USER`: defaults to `root`
+   - `SURREAL_PATH`: defaults to `surrealkv:///data/surreal.db` — data is written inside the container's `/data` directory which is mapped to `/mnt/user/appdata/broccoli_surrealdb` on the host. Change this only if you need a different storage path or engine (`rocksdb://` is also supported). **Do not use the `file://` scheme** — it is no longer supported and will cause the container to exit immediately.
+
+## `broccoli_surrealdb` deployment notes
+
+### Storage configuration
+
+SurrealDB persists data at the path specified by `SURREAL_PATH`. The default is `surrealkv:///data/surreal.db`.
+
+| Supported scheme | Notes |
+|---|---|
+| `surrealkv://` | Default. Recommended for most deployments. |
+| `rocksdb://` | Alternative embedded engine. |
+| ~~`file://`~~ | **Removed.** No longer supported; causes startup failure. |
+
+The `/data` path inside the container is mapped to `/mnt/user/appdata/broccoli_surrealdb` on the host by default, so data persists across container restarts and upgrades.
+
+If you need to move data, copy the host directory before changing `SURREAL_PATH`.
+
+### Validation
+
+After the container starts, the logs should show:
+
+```
+ INFO  surrealdb::node Starting kvs store at surrealkv:///data/surreal.db
+ INFO  surrealdb::rpc WebSocket listening on 0.0.0.0:8000
+```
+
+The container is healthy once you see the listening line. If you see the following error, your `SURREAL_PATH` still uses the unsupported scheme:
+
+```
+ERROR  The `file://` scheme is no longer supported; use `rocksdb://` or `surrealkv://` instead
+```
+
+**Fix:** Update `SURREAL_PATH` to `surrealkv:///data/surreal.db` and restart the container.
 
 ## Obtaining a Google Maps API Key
 
@@ -193,11 +227,11 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
 
 ### `broccoli_surrealdb`
-<img src="https://raw.githubusercontent.com/surrealdb/icons/main/surrealdb.svg" alt="broccoli_surrealdb icon" width="64">
+<img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/surrealdb.png" alt="broccoli_surrealdb icon" width="64">
 
 - Template: `templates/broccoli_surrealdb.xml`
 - Container image: `surrealdb/surrealdb:latest`
-- SurrealDB database service for apps like Open Notebook. Runs the `surreal start` command and exposes port 8000, including the WebSocket RPC endpoint used by Open Notebook.
+- SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting.
 
 <!-- TEMPLATES:END -->
 
