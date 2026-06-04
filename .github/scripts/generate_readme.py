@@ -33,7 +33,7 @@ def generate_templates_section(repo_root: Path) -> str:
 
         lines.append(f"### `{name}`")
         if icon_url:
-            lines.append(f"![{name} icon]({icon_url})")
+            lines.append(f'<img src="{icon_url}" alt="{name} icon" width="64">')
         lines.append("")
         lines.append(f"- Template: `{template_path.as_posix().removeprefix(f'{repo_root.as_posix()}/')}`")
         if repository:
