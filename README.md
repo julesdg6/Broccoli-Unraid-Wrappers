@@ -46,9 +46,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
 
    **broccoli_open-notebook:**
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
+   - Uses upstream `lfnovo/open_notebook:v1-latest` (recommended deployment path)
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
+   - Keep `OPEN_NOTEBOOK_ENCRYPTION_KEY` unchanged after first deploy; rotating or losing it makes saved provider credentials unreadable
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
    - `SURREAL_URL`: use `ws://surrealdb:8000/rpc` only when both containers are on a user-defined Docker network with working container DNS; if not on a user-defined network (default bridge mode), use `ws://<unraid-ip>:8000/rpc`
+   - Optional but useful advanced variables in the template: `API_URL`, `OPEN_NOTEBOOK_PASSWORD`, `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE`, `SURREAL_COMMANDS_MAX_TASKS`, `CORS_ORIGINS`
    - Example key generation: `openssl rand -base64 32`
 
    **broccoli_surrealdb:**
@@ -60,6 +63,84 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
      mkdir -p /mnt/user/appdata/broccoli_surrealdb
      chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
      ```
+
+## `broccoli_open-notebook` deployment, upgrade, and recovery guide
+
+### Fresh installation (supported workflow, no direct DB/API edits)
+
+1. Deploy and start `broccoli_surrealdb`.
+2. Deploy and start `broccoli_open-notebook` with:
+   - `/app/data` mapped to persistent storage
+   - a fixed `OPEN_NOTEBOOK_ENCRYPTION_KEY`
+   - `SURREAL_*` values matching your SurrealDB service
+3. Open `http://<unraid-ip>:8502`.
+4. In Open Notebook UI: **Settings → API Keys**:
+   - **Add Credential**
+   - **Test Connection**
+   - **Discover Models**
+   - **Register Models**
+5. In **Settings → Models**, choose defaults for:
+   - chat / language model
+   - embedding model
+
+If no providers/models are configured yet, this UI workflow is the supported bootstrap path.
+
+### Provider onboarding quick paths
+
+- **Cloud provider (OpenAI/Anthropic/Groq/etc.)**: add credential key in **Settings → API Keys**, then discover/register.
+- **Local Ollama**: add an **Ollama** credential in **Settings → API Keys** (for dockerized Ollama usually `http://ollama:11434`, for host-based Ollama often `http://host.docker.internal:11434`), then discover/register.
+- **OpenAI-compatible backends (LM Studio, vLLM, etc.)**: add **OpenAI-Compatible** credential with the provider base URL, then discover/register.
+
+### Persistent configuration expectations
+
+To make configuration survive container recreation, image updates, stack redeployments, and template reloads:
+
+- Keep `/app/data` on persistent storage (`/mnt/user/appdata/broccoli_open-notebook` by default).
+- Keep `OPEN_NOTEBOOK_ENCRYPTION_KEY` stable for the life of the deployment.
+- Keep SurrealDB data persistent (`/mnt/user/appdata/broccoli_surrealdb` by default).
+- Back up both Open Notebook and SurrealDB appdata before major changes.
+
+### Backup and restore
+
+Stop both containers before backup for a clean snapshot.
+
+```bash
+docker stop broccoli_open-notebook broccoli_surrealdb
+tar -czf /mnt/user/backups/open-notebook-$(date +%F).tgz \
+  /mnt/user/appdata/broccoli_open-notebook \
+  /mnt/user/appdata/broccoli_surrealdb
+docker start broccoli_surrealdb broccoli_open-notebook
+```
+
+Restore by stopping containers, extracting both folders back to the same paths, and starting containers again.
+
+### Upgrade and migration procedure
+
+1. Back up appdata for both containers.
+2. Update template(s) from this repository.
+3. Confirm Open Notebook uses `lfnovo/open_notebook:v1-latest`.
+4. Recreate containers while preserving mapped appdata paths and existing `OPEN_NOTEBOOK_ENCRYPTION_KEY`.
+5. Validate:
+   - `curl http://<unraid-ip>:5055/health`
+   - login to UI and verify credentials/models are still present
+6. If migrating from older env-based provider configs, use **Settings → API Keys → Migrate to Database**, then re-test/discover/register models.
+
+### Troubleshooting and recovery
+
+Health and startup checks:
+
+```bash
+docker logs --tail=200 broccoli_open-notebook
+curl -sS http://<unraid-ip>:5055/health
+docker exec broccoli_open-notebook sh -lc 'command -v curl || command -v wget || echo "No HTTP client in image"'
+```
+
+Common recovery actions:
+
+- **No models available**: run the provider onboarding flow again in **Settings → API Keys**, then set defaults in **Settings → Models**.
+- **Credential decrypt errors after update**: restore previous `OPEN_NOTEBOOK_ENCRYPTION_KEY` and restart.
+- **Database auth/connection errors**: verify `SURREAL_URL`, `SURREAL_USER`, `SURREAL_PASSWORD`, and SurrealDB container health.
+- **Slow/failing embeddings on local setups**: lower `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE` (for example `8`) and restart.
 
 ## `broccoli_surrealdb` deployment notes
 
@@ -270,8 +351,8 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png" alt="broccoli_open-notebook icon" width="64">
 
 - Template: `templates/broccoli_open-notebook.xml`
-- Container image: `lfnovo/open_notebook:latest`
-- Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
+- Container image: `lfnovo/open_notebook:v1-latest`
+- Privacy-focused NotebookLM alternative. Uses the current upstream v1-latest image with separated SurrealDB. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients). Persist /app/data and keep OPEN_NOTEBOOK_ENCRYPTION_KEY stable across upgrades so provider credentials and model settings survive updates.
 
 ### `broccoli_surrealdb`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/surrealdb.png" alt="broccoli_surrealdb icon" width="64">
