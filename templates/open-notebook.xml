@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>open-notebook</Name>
+  <Repository>lfnovo/open_notebook:v1-latest</Repository>
+  <Registry>https://hub.docker.com/r/lfnovo/open_notebook</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/lfnovo/open-notebook/issues</Support>
+  <Project>https://github.com/lfnovo/open-notebook</Project>
+  <Overview>Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).</Overview>
+  <Category>Productivity:</Category>
+  <WebUI>http://[IP]:[PORT:8502]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/open-notebook.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/lfnovo/open-notebook/main/docs/assets/asset_list.png</Icon>
+
+  <Config Name="Web UI Port" Target="8502" Default="8502" Mode="tcp" Description="Container Port: 8502" Type="Port" Display="always" Required="true" Mask="false">8502</Config>
+  <Config Name="API / MCP Port" Target="5055" Default="5055" Mode="tcp" Description="Container Port: 5055" Type="Port" Display="always" Required="true" Mask="false">5055</Config>
+
+  <Config Name="AppData" Target="/app/data" Default="/mnt/user/appdata/open-notebook" Mode="rw" Description="Persistent app data" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/open-notebook</Config>
+
+  <Config Name="Encryption Key" Target="OPEN_NOTEBOOK_ENCRYPTION_KEY" Default="change-me-to-a-secret-string" Mode="" Description="Required. Change this to a unique secret value." Type="Variable" Display="always" Required="true" Mask="false">change-me-to-a-secret-string</Config>
+  <Config Name="SurrealDB URL" Target="SURREAL_URL" Default="ws://surrealdb:8000/rpc" Mode="" Description="SurrealDB WebSocket endpoint" Type="Variable" Display="advanced" Required="true" Mask="false">ws://surrealdb:8000/rpc</Config>
+  <Config Name="SurrealDB User" Target="SURREAL_USER" Default="root" Mode="" Description="SurrealDB username" Type="Variable" Display="advanced" Required="true" Mask="false">root</Config>
+  <Config Name="SurrealDB Password" Target="SURREAL_PASSWORD" Default="root" Mode="" Description="SurrealDB password" Type="Variable" Display="advanced" Required="true" Mask="false">root</Config>
+  <Config Name="SurrealDB Namespace" Target="SURREAL_NAMESPACE" Default="open_notebook" Mode="" Description="SurrealDB namespace" Type="Variable" Display="advanced" Required="true" Mask="false">open_notebook</Config>
+  <Config Name="SurrealDB Database" Target="SURREAL_DATABASE" Default="open_notebook" Mode="" Description="SurrealDB database" Type="Variable" Display="advanced" Required="true" Mask="false">open_notebook</Config>
+</Container>
