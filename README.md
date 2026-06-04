@@ -170,6 +170,7 @@ open_notebook:
 ```
 
 Replace `<host>` with your Unraid server IP or hostname (for example `192.168.1.100`).
+No extra Hermes auth block is needed for this wrapper: if `OPEN_NOTEBOOK_PASSWORD` is set, the bundled MCP process forwards it internally when calling the local Open Notebook API.
 
 ## `broccoli_surrealdb` deployment notes
 
