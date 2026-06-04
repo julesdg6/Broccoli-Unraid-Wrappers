@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/github/github-mcp-server/issues</Support>
   <Project>https://github.com/github/github-mcp-server</Project>
-  <Overview>GitHub MCP server for AI agents. Exposes MCP over HTTP on port 8082.</Overview>
+  <Overview>GitHub MCP server for AI agents. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8082 (GET /mcp returns 405 with Allow: POST when healthy).</Overview>
   <Category>Tools:</Category>
   <WebUI>http://[IP]:[PORT:8082]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_github-mcp-server.xml</TemplateURL>

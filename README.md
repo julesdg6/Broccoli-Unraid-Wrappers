@@ -31,7 +31,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
 
    **broccoli_github-mcp-server:**
    - `GITHUB_PERSONAL_ACCESS_TOKEN`: optional but recommended for higher API limits and private repo access
-   - After the container starts, point your MCP client to `http://<unraid-ip>:8082/`
+   - After the container starts, point your MCP client to `http://<unraid-ip>:8082/mcp`
 
    **broccoli_mcp-google-map:**
    - `GOOGLE_MAPS_API_KEY`: your Google Maps API key from [Google Cloud Console](https://console.cloud.google.com)
@@ -43,6 +43,81 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
    - Example key generation: `openssl rand -base64 32`
 
+## `github-mcp-server` agent connection quick start
+
+- **MCP endpoint URL:** `http://<unraid-ip>:8082/mcp`
+- **Transport:** Streamable HTTP MCP over `POST` requests
+- **Authentication:** Send the following header:
+
+```http
+Authorization: Bearer <your-github-token>
+```
+- **Recommended headers:**
+  - `Content-Type: application/json`
+  - `Accept: application/json, text/event-stream`
+
+### Validate the deployment
+
+```bash
+curl -i http://<unraid-ip>:8082/mcp
+```
+
+Expected health signal:
+- `HTTP/1.1 405 Method Not Allowed`
+- `Allow: POST`
+
+This means the server is reachable and waiting for MCP `POST` requests on `/mcp`.
+
+### OAuth and token configuration
+
+- Default/recommended setup for this wrapper is a static bearer token header in your MCP client config.
+- If your MCP client supports OAuth discovery for your deployment, follow that client's OAuth setup flow; otherwise keep using the static header shown above.
+
+
+### Example MCP client configurations
+
+> These are generic examples. Field names can vary slightly by client.
+
+**Streamable HTTP / HTTP-style config**
+```json
+{
+  "name": "github-local",
+  "type": "http",
+  "url": "http://<unraid-ip>:8082/mcp",
+  "headers": {
+    "Authorization": "Bearer <your-github-token>"
+  }
+}
+```
+
+**SSE-style config (clients that still label remote MCP as SSE)**
+```json
+{
+  "name": "github-local",
+  "transport": "sse",
+  "url": "http://<unraid-ip>:8082/mcp",
+  "headers": {
+    "Authorization": "Bearer <your-github-token>"
+  }
+}
+```
+
+**Clients that use command arrays or env-injected headers**
+```json
+{
+  "mcpServers": {
+    "github-local": {
+      "url": "http://<unraid-ip>:8082/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-github-token>"
+      }
+    }
+  }
+}
+```
+
+These templates are suitable starting points for Claude Desktop, OpenCode, Hermes, Open WebUI, LibreChat, Continue, Cline, Roo Code, and custom MCP clients.
+
 ## Included templates
 
 <!-- TEMPLATES:START -->
@@ -53,7 +128,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_github-mcp-server.xml`
 - Container image: `ghcr.io/github/github-mcp-server:latest`
-- GitHub MCP server for AI agents. Exposes MCP over HTTP on port 8082.
+- GitHub MCP server for AI agents. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8082 (GET /mcp returns 405 with Allow: POST when healthy).
 
 ### `broccoli_mcp-google-map`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png" alt="broccoli_mcp-google-map icon" width="64">
