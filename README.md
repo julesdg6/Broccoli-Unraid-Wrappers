@@ -52,6 +52,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
    - `SURREAL_URL`: use `ws://surrealdb:8000/rpc` only when both containers are on a user-defined Docker network with working container DNS; if not on a user-defined network (default bridge mode), use `ws://<unraid-ip>:8000/rpc`
    - MCP defaults: `OPEN_NOTEBOOK_URL=http://127.0.0.1:5055`, `OPEN_NOTEBOOK_MCP_PORT=5056`, MCP endpoint `http://<unraid-ip>:5056/mcp`
+   - Security: set `OPEN_NOTEBOOK_PASSWORD` before exposing API/MCP ports beyond your trusted network
    - Optional but useful advanced variables in the template: `API_URL`, `OPEN_NOTEBOOK_PASSWORD`, `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE`, `SURREAL_COMMANDS_MAX_TASKS`, `CORS_ORIGINS`
    - Example key generation: `openssl rand -base64 32`
 
