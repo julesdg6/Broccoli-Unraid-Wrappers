@@ -138,6 +138,11 @@ curl -i http://<unraid-ip>:5056/mcp
 docker exec broccoli_open-notebook sh -lc 'command -v curl || command -v wget || echo "No HTTP client in image"'
 ```
 
+Expected startup log markers in `docker logs`:
+- `[startup] Open Notebook supervisord starting (api, worker, frontend)...`
+- `[startup] Open Notebook API healthy at http://127.0.0.1:5055`
+- `[startup] Open Notebook MCP starting at http://0.0.0.0:5056/mcp ...`
+
 Container-internal diagnostics:
 
 ```bash
