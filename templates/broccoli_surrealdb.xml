@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_surrealdb</Name>
+  <Repository>surrealdb/surrealdb:latest</Repository>
+  <Registry>https://hub.docker.com/r/surrealdb/surrealdb</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/surrealdb/surrealdb/issues</Support>
+  <Project>https://github.com/surrealdb/surrealdb</Project>
+  <Overview>SurrealDB database service for apps like Open Notebook. Exposes SurrealDB over port 8000, including the WebSocket RPC endpoint used by Open Notebook.</Overview>
+  <Category>Productivity:</Category>
+  <WebUI>http://[IP]:[PORT:8000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_surrealdb.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/surrealdb/icons/main/surrealdb.svg</Icon>
+  <PostArgs>start</PostArgs>
+
+  <Config Name="HTTP / RPC Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 — SurrealDB HTTP + WebSocket RPC endpoint (/rpc)." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+
+  <Config Name="AppData" Target="/data" Default="/mnt/user/appdata/broccoli_surrealdb" Mode="rw" Description="Persistent SurrealDB storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_surrealdb</Config>
+
+  <Config Name="SurrealDB Log Level" Target="SURREAL_LOG" Default="info" Mode="" Description="SurrealDB log level (use info in production)." Type="Variable" Display="advanced" Required="false" Mask="false">info</Config>
+  <Config Name="SurrealDB User" Target="SURREAL_USER" Default="root" Mode="" Description="Root username for clients such as Open Notebook." Type="Variable" Display="always" Required="true" Mask="false">root</Config>
+  <Config Name="SurrealDB Password" Target="SURREAL_PASS" Default="" Mode="" Description="Required. Set a strong password and reuse it in Open Notebook's SURREAL_PASSWORD." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="SurrealDB Storage Path" Target="SURREAL_PATH" Default="file:/data/surreal.db" Mode="" Description="Persistent local database path in the container." Type="Variable" Display="advanced" Required="true" Mask="false">file:/data/surreal.db</Config>
+</Container>
