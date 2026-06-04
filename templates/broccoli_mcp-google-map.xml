@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Container version="2">
-  <Name>mcp-google-map</Name>
+  <Name>broccoli_mcp-google-map</Name>
   <Repository>node:20-alpine</Repository>
   <Registry>https://hub.docker.com/_/node</Registry>
   <Network>bridge</Network>
@@ -12,7 +12,7 @@
   <Overview>MCP server providing 18 Google Maps tools for AI agents — geocode, search, directions, weather, air quality, local rank tracking, and more. Exposes a Streamable HTTP MCP endpoint at /mcp for use with Claude Desktop, Cursor, VS Code, and other MCP clients. Requires a Google Maps API key with Places API (New) and Routes API enabled.</Overview>
   <Category>Tools:</Category>
   <WebUI>http://[IP]:[PORT:3020]/mcp</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/mcp-google-map.xml</TemplateURL>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_mcp-google-map.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png</Icon>
   <ExtraParams>--entrypoint sh</ExtraParams>
   <PostArgs>-c &quot;npx --yes @cablate/mcp-google-map@latest --host 0.0.0.0 --port 3020&quot;</PostArgs>

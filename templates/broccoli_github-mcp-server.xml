@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Container version="2">
-  <Name>github-mcp-server</Name>
+  <Name>broccoli_github-mcp-server</Name>
   <Repository>ghcr.io/github/github-mcp-server:latest</Repository>
   <Registry>https://github.com/github/github-mcp-server/pkgs/container/github-mcp-server</Registry>
   <Network>bridge</Network>
@@ -12,7 +12,7 @@
   <Overview>GitHub MCP server for AI agents. Exposes MCP over HTTP on port 8082.</Overview>
   <Category>Tools:</Category>
   <WebUI>http://[IP]:[PORT:8082]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/github-mcp-server.xml</TemplateURL>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_github-mcp-server.xml</TemplateURL>
   <Icon>https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png</Icon>
   <PostArgs>http</PostArgs>
 
