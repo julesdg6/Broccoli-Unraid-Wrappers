@@ -16,7 +16,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/open-notebook.xml \
 4. Select template **open-notebook.xml** (or choose it from the template dropdown), then review/save.
 5. Before starting the container, set required values:
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique secret string
-   - `SURREAL_PASSWORD`: must match your SurrealDB service password (for default SurrealDB setup this is often `root`)
+   - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
 
 ## Included templates
 
