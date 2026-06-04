@@ -43,6 +43,42 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
    - Example key generation: `openssl rand -base64 32`
 
+## Obtaining a Google Maps API Key
+
+1. Create a Google Cloud project in the [Google Cloud Console](https://console.cloud.google.com/projectcreate).
+2. Enable the required Google Maps Platform APIs in [API Library](https://console.cloud.google.com/apis/library):
+   - [Places API (New)](https://console.cloud.google.com/apis/library/places-backend.googleapis.com)
+   - [Routes API](https://console.cloud.google.com/apis/library/routes.googleapis.com)
+3. Enable billing for the same project from [Billing](https://console.cloud.google.com/billing) (required by Google Maps Platform APIs).
+4. Create an API key in [Credentials](https://console.cloud.google.com/apis/credentials).
+5. Apply restrictions to the key:
+   - Set **API restrictions** to only **Places API (New)** and **Routes API**.
+   - Add an **application restriction** only if it matches your deployment model (for server-side Unraid containers, overly strict client restrictions can block requests).
+6. In the Unraid template, paste the key into `GOOGLE_MAPS_API_KEY`.
+7. Save the template and restart the `broccoli_mcp-google-map` container.
+
+### Validation
+
+After the container restarts, run a live tool call through the MCP endpoint:
+
+```bash
+curl -sS http://<unraid-ip>:3020/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "maps_geocode",
+      "arguments": {
+        "address": "1600 Amphitheatre Parkway, Mountain View, CA"
+      }
+    }
+  }'
+```
+
+A successful response with geocoding data confirms the MCP server can authenticate and communicate with Google Maps services. If you see `REQUEST_DENIED` or an API key error, re-check API enablement, billing, and key restrictions.
+
 ## `github-mcp-server` agent connection quick start
 
 - **MCP endpoint URL:** `http://<unraid-ip>:8082/mcp`
