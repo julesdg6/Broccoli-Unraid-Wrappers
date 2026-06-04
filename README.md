@@ -25,6 +25,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_open-notebook.xml
 ```
 
+**broccoli_surrealdb:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_surrealdb.xml
+```
+
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select the desired template, then review/save.
 5. Before starting the container, set required values:
@@ -39,9 +45,15 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
    - After the container starts, point your MCP client to `http://<unraid-ip>:3020/mcp`
 
    **broccoli_open-notebook:**
+   - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
+   - `SURREAL_URL`: use `ws://surrealdb:8000/rpc` only when both containers are on a user-defined Docker network with working container DNS; if not on a user-defined network (default bridge mode), use `ws://<unraid-ip>:8000/rpc`
    - Example key generation: `openssl rand -base64 32`
+
+   **broccoli_surrealdb:**
+   - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
+   - `SURREAL_USER`: defaults to `root`
 
 ## Obtaining a Google Maps API Key
 
@@ -179,6 +191,13 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Template: `templates/broccoli_open-notebook.xml`
 - Container image: `lfnovo/open_notebook:v1-latest`
 - Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
+
+### `broccoli_surrealdb`
+<img src="https://raw.githubusercontent.com/surrealdb/icons/main/surrealdb.svg" alt="broccoli_surrealdb icon" width="64">
+
+- Template: `templates/broccoli_surrealdb.xml`
+- Container image: `surrealdb/surrealdb:latest`
+- SurrealDB database service for apps like Open Notebook. Runs the `surreal start` command and exposes port 8000, including the WebSocket RPC endpoint used by Open Notebook.
 
 <!-- TEMPLATES:END -->
 
