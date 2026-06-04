@@ -13,7 +13,7 @@
   <Category>Productivity:</Category>
   <WebUI>http://[IP]:[PORT:8502]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/open-notebook.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/lfnovo/open-notebook/main/docs/assets/asset_list.png</Icon>
+  <Icon>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png</Icon>
 
   <Config Name="Web UI Port" Target="8502" Default="8502" Mode="tcp" Description="Container Port: 8502" Type="Port" Display="always" Required="true" Mask="false">8502</Config>
   <Config Name="API / MCP Port" Target="5055" Default="5055" Mode="tcp" Description="Container Port: 5055" Type="Port" Display="always" Required="true" Mask="false">5055</Config>

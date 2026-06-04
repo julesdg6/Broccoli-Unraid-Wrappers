@@ -17,6 +17,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/open-notebook.xml \
 5. Before starting the container, set required values:
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
+   - Example key generation: `openssl rand -base64 32`
 
 ## Included templates
 
