@@ -55,8 +55,35 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
    - `SURREAL_USER`: defaults to `root`
    - `SURREAL_PATH`: defaults to `surrealkv:///data/surreal.db` — data is written inside the container's `/data` directory which is mapped to `/mnt/user/appdata/broccoli_surrealdb` on the host. Change this only if you need a different storage path or engine (`rocksdb://` is also supported). **Do not use the `file://` scheme** — it is no longer supported and will cause the container to exit immediately.
+   - **Before starting the container for the first time**, prepare the data directory on the Unraid host (SurrealDB runs as UID 65532 / `nonroot` and needs write access):
+     ```bash
+     mkdir -p /mnt/user/appdata/broccoli_surrealdb
+     chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
+     ```
 
 ## `broccoli_surrealdb` deployment notes
+
+### First-run: directory permissions
+
+SurrealDB runs as a non-root user (`nonroot`, UID 65532) inside the container. The mapped host directory must be writable by that user **before** the container starts for the first time, or you will see:
+
+```
+ERROR: There was a problem with the datastore: IO error: Permission denied (os error 13)
+```
+
+Run the following commands on your Unraid host (via SSH or the Unraid terminal) **before** clicking Start in the Docker UI:
+
+```bash
+mkdir -p /mnt/user/appdata/broccoli_surrealdb
+chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
+```
+
+If you are unsure of your host user setup or need a quick fix, the following is an alternative (less restrictive) option:
+
+```bash
+mkdir -p /mnt/user/appdata/broccoli_surrealdb
+chmod -R 777 /mnt/user/appdata/broccoli_surrealdb
+```
 
 ### Storage configuration
 
@@ -74,14 +101,34 @@ If you need to move data, copy the host directory before changing `SURREAL_PATH`
 
 ### Validation
 
-After the container starts, the logs should show:
+After the container starts, verify the volume mount and check for a clean startup:
+
+```bash
+docker inspect broccoli_surrealdb --format '{{range .Mounts}}{{println .Source "->" .Destination}}{{end}}'
+```
+
+Expected output:
+
+```
+/mnt/user/appdata/broccoli_surrealdb -> /data
+```
+
+Then check the logs:
+
+```bash
+docker logs --tail=100 broccoli_surrealdb
+```
+
+The logs should show:
 
 ```
  INFO  surrealdb::node Starting kvs store at surrealkv:///data/surreal.db
  INFO  surrealdb::rpc WebSocket listening on 0.0.0.0:8000
 ```
 
-The container is healthy once you see the listening line. If you see the following error, your `SURREAL_PATH` still uses the unsupported scheme:
+The container is healthy once you see the listening line. If you see `IO error: Permission denied (os error 13)`, the data directory was not made writable before the container started — stop the container, run the `chmod` command from the [First-run section](#first-run-directory-permissions), and restart.
+
+If you see the following error, your `SURREAL_PATH` still uses the unsupported scheme:
 
 ```
 ERROR  The `file://` scheme is no longer supported; use `rocksdb://` or `surrealkv://` instead
@@ -231,7 +278,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_surrealdb.xml`
 - Container image: `surrealdb/surrealdb:latest`
-- SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting.
+- SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting. IMPORTANT: SurrealDB runs as a non-root user (UID 65532). Before starting the container for the first time, run on your Unraid host: mkdir -p /mnt/user/appdata/broccoli_surrealdb && chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb
 
 <!-- TEMPLATES:END -->
 

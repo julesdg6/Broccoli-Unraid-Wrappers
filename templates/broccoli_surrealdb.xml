@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/surrealdb/surrealdb/issues</Support>
   <Project>https://github.com/surrealdb/surrealdb</Project>
-  <Overview>SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting.</Overview>
+  <Overview>SurrealDB database service for apps like Open Notebook. Runs `surreal start` and exposes port 8000 (HTTP + WebSocket RPC). Data is stored using the surrealkv engine at the path set by SURREAL_PATH (default: surrealkv:///data/surreal.db inside the container). Map /data to a persistent host path so data survives container restarts. Supported storage schemes: surrealkv:// (recommended), rocksdb://. The legacy file:// scheme is no longer supported — using it will prevent the container from starting. IMPORTANT: SurrealDB runs as a non-root user (UID 65532). Before starting the container for the first time, run on your Unraid host: mkdir -p /mnt/user/appdata/broccoli_surrealdb &amp;&amp; chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb</Overview>
   <Category>Productivity:</Category>
   <WebUI>http://[IP]:[PORT:8000]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_surrealdb.xml</TemplateURL>
@@ -18,7 +18,7 @@
 
   <Config Name="HTTP / RPC Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 - SurrealDB HTTP + WebSocket RPC endpoint (/rpc)." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
 
-  <Config Name="AppData" Target="/data" Default="/mnt/user/appdata/broccoli_surrealdb" Mode="rw" Description="Persistent SurrealDB storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_surrealdb</Config>
+  <Config Name="AppData" Target="/data" Default="/mnt/user/appdata/broccoli_surrealdb" Mode="rw" Description="Persistent database storage. Directory must be writable by the SurrealDB container user (UID 65532). Before first start, run on the Unraid host: mkdir -p /mnt/user/appdata/broccoli_surrealdb &amp;&amp; chown -R 65532:65532 /mnt/user/appdata/broccoli_surrealdb" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_surrealdb</Config>
 
   <Config Name="SurrealDB Log Level" Target="SURREAL_LOG" Default="info" Mode="" Description="SurrealDB log level (use info in production)." Type="Variable" Display="advanced" Required="false" Mask="false">info</Config>
   <Config Name="SurrealDB User" Target="SURREAL_USER" Default="root" Mode="" Description="Root username for clients such as Open Notebook." Type="Variable" Display="always" Required="true" Mask="false">root</Config>
