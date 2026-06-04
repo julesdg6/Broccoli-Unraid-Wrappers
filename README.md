@@ -48,7 +48,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
-   - `SURREAL_URL`: use `ws://broccoli_surrealdb:8000/rpc` when both containers are on a Docker network where container DNS works; otherwise set it to a reachable SurrealDB host/IP
+   - `SURREAL_URL`: on a user-defined Docker bridge network, use a container name/alias like `ws://surrealdb:8000/rpc`; on default bridge networking, use `ws://<unraid-ip>:8000/rpc`
    - Example key generation: `openssl rand -base64 32`
 
    **broccoli_surrealdb:**
