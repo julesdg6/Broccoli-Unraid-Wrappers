@@ -8,12 +8,12 @@ A collection of Unraid 7 Docker templates (wrappers) for self-hosted apps.
 2. Download a template into your user templates folder:
 
 ```bash
-curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/my-open-notebook.xml \
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/open-notebook.xml \
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/open-notebook.xml
 ```
 
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
-4. Select template **my-open-notebook.xml** (or choose it from the template dropdown), then review/save.
+4. Select template **open-notebook.xml** (or choose it from the template dropdown), then review/save.
 
 ## Included templates
 
