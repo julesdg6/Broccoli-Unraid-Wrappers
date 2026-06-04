@@ -38,6 +38,13 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/mcp-google-map.xml \
 <!-- TEMPLATES:START -->
 This repository provides Unraid Docker templates and matching icons for self-hosted apps.
 
+### `github-mcp-server`
+![github-mcp-server icon](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
+
+- Template: `templates/github-mcp-server.xml`
+- Container image: `ghcr.io/github/github-mcp-server:latest`
+- GitHub MCP server for AI agents. Exposes MCP over HTTP on port 8082.
+
 ### `mcp-google-map`
 ![mcp-google-map icon](https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png)
 
