@@ -21,8 +21,15 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/open-notebook.xml \
 
 ## Included templates
 
-- `templates/open-notebook.xml` - Open Notebook (`lfnovo/open_notebook:v1-latest`)
-  - Web UI port: `8502`
-  - API/MCP integration port: `5055`
-  - Includes required variables with defaults where available
-  - Includes a PNG icon
+<!-- TEMPLATES:START -->
+This repository provides Unraid Docker templates and matching icons for self-hosted apps.
+
+### `open-notebook`
+![open-notebook icon](https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png)
+
+- Template: `templates/open-notebook.xml`
+- Container image: `lfnovo/open_notebook:v1-latest`
+- Privacy-focused NotebookLM alternative. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients).
+
+<!-- TEMPLATES:END -->
+
