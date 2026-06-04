@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>github-mcp-server</Name>
+  <Repository>ghcr.io/github/github-mcp-server:latest</Repository>
+  <Registry>https://github.com/github/github-mcp-server/pkgs/container/github-mcp-server</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/github/github-mcp-server/issues</Support>
+  <Project>https://github.com/github/github-mcp-server</Project>
+  <Overview>GitHub MCP server for AI agents. Exposes MCP over HTTP on port 8082.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8082]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/github-mcp-server.xml</TemplateURL>
+  <Icon>https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png</Icon>
+  <PostArgs>http</PostArgs>
+
+  <Config Name="HTTP Port" Target="8082" Default="8082" Mode="tcp" Description="Container Port: 8082" Type="Port" Display="always" Required="true" Mask="false">8082</Config>
+
+  <Config Name="GitHub Personal Access Token" Target="GITHUB_PERSONAL_ACCESS_TOKEN" Default="" Mode="" Description="Optional but recommended for higher API limits and private repo access." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="GitHub Host" Target="GITHUB_HOST" Default="https://api.github.com" Mode="" Description="Set only for GitHub Enterprise Server or ghe.com data residency." Type="Variable" Display="advanced" Required="false" Mask="false">https://api.github.com</Config>
+  <Config Name="Enabled Toolsets" Target="GITHUB_TOOLSETS" Default="" Mode="" Description="Optional comma-separated toolsets (for example: repos,issues,pull_requests)." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Read-Only Mode" Target="GITHUB_READ_ONLY" Default="false" Mode="" Description="Set to true to disable write operations." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+</Container>
