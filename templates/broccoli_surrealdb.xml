@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/surrealdb/surrealdb/issues</Support>
   <Project>https://github.com/surrealdb/surrealdb</Project>
-  <Overview>SurrealDB database service for apps like Open Notebook. Exposes SurrealDB over port 8000, including the WebSocket RPC endpoint used by Open Notebook.</Overview>
+  <Overview>SurrealDB database service for apps like Open Notebook. Runs the `surreal start` command and exposes port 8000, including the WebSocket RPC endpoint used by Open Notebook.</Overview>
   <Category>Productivity:</Category>
   <WebUI>http://[IP]:[PORT:8000]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_surrealdb.xml</TemplateURL>

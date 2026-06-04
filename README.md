@@ -48,7 +48,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
-   - `SURREAL_URL`: keep `ws://surrealdb:8000/rpc` when using this repo's `broccoli_surrealdb` template on the same Docker network
+   - `SURREAL_URL`: use `ws://broccoli_surrealdb:8000/rpc` when both containers are on a Docker network where container DNS works; otherwise set it to a reachable SurrealDB host/IP
    - Example key generation: `openssl rand -base64 32`
 
    **broccoli_surrealdb:**
@@ -197,7 +197,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_surrealdb.xml`
 - Container image: `surrealdb/surrealdb:latest`
-- SurrealDB database service for apps like Open Notebook. Exposes SurrealDB over port 8000, including the WebSocket RPC endpoint used by Open Notebook.
+- SurrealDB database service for apps like Open Notebook. Runs the `surreal start` command and exposes port 8000, including the WebSocket RPC endpoint used by Open Notebook.
 
 <!-- TEMPLATES:END -->
 
