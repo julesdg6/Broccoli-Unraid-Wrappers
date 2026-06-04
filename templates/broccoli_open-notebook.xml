@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>broccoli_open-notebook</Name>
-  <Repository>lfnovo/open_notebook:v1-latest</Repository>
+  <Repository>lfnovo/open_notebook:pr-716</Repository>
   <Registry>https://hub.docker.com/r/lfnovo/open_notebook</Registry>
   <Network>bridge</Network>
   <MyIP/>
