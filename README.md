@@ -19,6 +19,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_mcp-google-
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_mcp-google-map.xml
 ```
 
+**broccoli_norns-desktop:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_norns-desktop.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_norns-desktop.xml
+```
+
 **broccoli_open-notebook:**
 ```bash
 curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebook.xml \
@@ -43,6 +49,16 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - `GOOGLE_MAPS_API_KEY`: your Google Maps API key from [Google Cloud Console](https://console.cloud.google.com)
    - Enable **Places API (New)** and **Routes API** in your Google Cloud project before use
    - After the container starts, point your MCP client to `http://<unraid-ip>:3020/mcp`
+
+   **broccoli_norns-desktop:**
+   - Uses image `schollz/norns:dust` from the upstream norns-desktop workflow (linux/amd64)
+   - Ensure your Unraid host exposes `/dev/snd` to Docker and has an `audio` group available
+   - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data
+   - Create `/mnt/user/appdata/broccoli_norns-desktop/jackdrc` with your audio device config
+   - After the container starts:
+     - maiden UI: `http://<unraid-ip>:5000`
+     - norns screen: `http://<unraid-ip>:8889`
+     - audio stream: `http://<unraid-ip>:8000/radio.mp3`
 
    **broccoli_open-notebook:**
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
@@ -346,6 +362,13 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Template: `templates/broccoli_mcp-google-map.xml`
 - Container image: `node:20-alpine`
 - MCP server providing 18 Google Maps tools for AI agents — geocode, search, directions, weather, air quality, local rank tracking, and more. Exposes a Streamable HTTP MCP endpoint at /mcp for use with Claude Desktop, Cursor, VS Code, and other MCP clients. Requires a Google Maps API key with Places API (New) and Routes API enabled.
+
+### `broccoli_norns-desktop`
+<img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/norns-desktop.png" alt="broccoli_norns-desktop icon" width="64">
+
+- Template: `templates/broccoli_norns-desktop.xml`
+- Container image: `schollz/norns:dust`
+- norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio.
 
 ### `broccoli_open-notebook`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png" alt="broccoli_open-notebook icon" width="64">
