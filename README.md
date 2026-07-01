@@ -46,11 +46,13 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
 
    **broccoli_open-notebook:**
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
-   - Uses upstream `lfnovo/open_notebook:v1-latest` (recommended deployment path)
+   - Uses upstream `lfnovo/open_notebook:v1-latest` and starts `open-notebook-mcp` in the same container
    - `OPEN_NOTEBOOK_ENCRYPTION_KEY`: a unique, cryptographically random secret (recommended 32+ characters)
    - Keep `OPEN_NOTEBOOK_ENCRYPTION_KEY` unchanged after first deploy; rotating or losing it makes saved provider credentials unreadable
    - `SURREAL_PASSWORD`: must match your SurrealDB service password (use a strong, unique password)
    - `SURREAL_URL`: use `ws://surrealdb:8000/rpc` only when both containers are on a user-defined Docker network with working container DNS; if not on a user-defined network (default bridge mode), use `ws://<unraid-ip>:8000/rpc`
+   - MCP defaults: `OPEN_NOTEBOOK_URL=http://127.0.0.1:5055`, `OPEN_NOTEBOOK_MCP_PORT=5056`, MCP endpoint `http://<unraid-ip>:5056/mcp`
+   - **Security warning:** set `OPEN_NOTEBOOK_PASSWORD` before exposing API/MCP ports beyond your trusted network. Leaving it empty while publishing these ports can allow unauthenticated notebook/API access.
    - Optional but useful advanced variables in the template: `API_URL`, `OPEN_NOTEBOOK_PASSWORD`, `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE`, `SURREAL_COMMANDS_MAX_TASKS`, `CORS_ORIGINS`
    - Example key generation: `openssl rand -base64 32`
 
@@ -122,6 +124,7 @@ Restore by stopping containers, extracting both folders back to the same paths, 
 4. Recreate containers while preserving mapped appdata paths and existing `OPEN_NOTEBOOK_ENCRYPTION_KEY`.
 5. Validate:
    - `curl http://<unraid-ip>:5055/health`
+   - `curl http://<unraid-ip>:5056/mcp`
    - login to UI and verify credentials/models are still present
 6. If migrating from older env-based provider configs, use **Settings → API Keys → Migrate to Database**, then re-test/discover/register models.
 
@@ -132,7 +135,21 @@ Health and startup checks:
 ```bash
 docker logs --tail=200 broccoli_open-notebook
 curl -sS http://<unraid-ip>:5055/health
+curl -i http://<unraid-ip>:5056/mcp
 docker exec broccoli_open-notebook sh -lc 'command -v curl || command -v wget || echo "No HTTP client in image"'
+```
+
+Expected startup log markers in `docker logs`:
+- `[startup] Open Notebook supervisord starting (api, worker, frontend)...`
+- `[startup] Open Notebook API healthy at http://127.0.0.1:5055`
+- `[startup] Open Notebook MCP starting at http://0.0.0.0:5056/mcp ...`
+
+Container-internal diagnostics:
+
+```bash
+docker exec broccoli_open-notebook sh -lc 'curl -sS http://127.0.0.1:5055/health'
+docker exec broccoli_open-notebook sh -lc 'curl -sS http://127.0.0.1:5055/openapi.json | head -c 200'
+docker exec broccoli_open-notebook sh -lc 'curl -i http://127.0.0.1:5056/mcp'
 ```
 
 Common recovery actions:
@@ -141,6 +158,19 @@ Common recovery actions:
 - **Credential decrypt errors after update**: restore previous `OPEN_NOTEBOOK_ENCRYPTION_KEY` and restart.
 - **Database auth/connection errors**: verify `SURREAL_URL`, `SURREAL_USER`, `SURREAL_PASSWORD`, and SurrealDB container health.
 - **Slow/failing embeddings on local setups**: lower `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE` (for example `8`) and restart.
+- **MCP endpoint unreachable**: confirm Open Notebook API is healthy first (`curl http://<unraid-ip>:5055/health`), then verify MCP endpoint (`curl -i http://<unraid-ip>:5056/mcp`) and `OPEN_NOTEBOOK_URL`/`OPEN_NOTEBOOK_MCP_PORT` values.
+
+### Hermes MCP configuration example
+
+```yaml
+open_notebook:
+  enabled: true
+  transport: streamable_http
+  url: http://<host>:5056/mcp
+```
+
+Replace `<host>` with your Unraid server IP or hostname (for example `192.168.1.100`).
+Hermes connects to the MCP endpoint without an extra auth block in this wrapper. If `OPEN_NOTEBOOK_PASSWORD` is set, the bundled MCP process uses it internally as the Authorization bearer value when calling the local Open Notebook API.
 
 ## `broccoli_surrealdb` deployment notes
 
@@ -352,7 +382,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_open-notebook.xml`
 - Container image: `lfnovo/open_notebook:v1-latest`
-- Privacy-focused NotebookLM alternative. Uses the current upstream v1-latest image with separated SurrealDB. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients). Persist /app/data and keep OPEN_NOTEBOOK_ENCRYPTION_KEY stable across upgrades so provider credentials and model settings survive updates.
+- Privacy-focused NotebookLM alternative. Uses upstream v1-latest image with separated SurrealDB and starts Open Notebook MCP in the same container. Exposes Web UI on 8502, API on 5055, and MCP Streamable HTTP on 5056 (/mcp). Persist /app/data and keep OPEN_NOTEBOOK_ENCRYPTION_KEY stable across upgrades so provider credentials and model settings survive updates.
 
 ### `broccoli_surrealdb`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/surrealdb.png" alt="broccoli_surrealdb icon" width="64">
