@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_stealth-browser-mcp</Name>
+  <Repository>ghcr.io/vibheksoni/stealth-browser-mcp:latest</Repository>
+  <Registry>https://github.com/vibheksoni/stealth-browser-mcp/pkgs/container/stealth-browser-mcp</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/vibheksoni/stealth-browser-mcp/issues</Support>
+  <Project>https://github.com/vibheksoni/stealth-browser-mcp</Project>
+  <Overview>Stealth browser MCP server for AI agents — bypasses Cloudflare, antibot systems, and social media blocks using nodriver + Chrome DevTools Protocol + FastMCP. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8000. Provides 97 tools across 11 sections: browser management, element interaction, element extraction, network interception, CDP function execution, and more. Set STEALTH_BROWSER_MCP_AUTH_TOKEN to enable bearer token auth for the HTTP endpoint.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8000]/mcp</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_stealth-browser-mcp.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/vibheksoni/stealth-browser-mcp/master/media/UndetectedStealthBrowser.png</Icon>
+  <ExtraParams>--shm-size=2gb</ExtraParams>
+
+  <Config Name="MCP HTTP Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 — MCP Streamable HTTP endpoint at /mcp. Point your MCP client to http://&lt;unraid-ip&gt;:8000/mcp" Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+
+  <Config Name="Auth Token" Target="STEALTH_BROWSER_MCP_AUTH_TOKEN" Default="" Mode="" Description="Optional auth token for HTTP transport. When set, HTTP clients must send this value as a bearer token in the Authorization header. Strongly recommended when the port is accessible on your network. Example: openssl rand -hex 32" Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Browser Idle Timeout" Target="BROWSER_IDLE_TIMEOUT" Default="600" Mode="" Description="Seconds of inactivity before an unused browser instance is auto-closed. Set to 0 to disable idle reaping globally." Type="Variable" Display="advanced" Required="false" Mask="false">600</Config>
+  <Config Name="Idle Reaper Interval" Target="BROWSER_IDLE_REAPER_INTERVAL" Default="60" Mode="" Description="Background reaper check interval in seconds." Type="Variable" Display="advanced" Required="false" Mask="false">60</Config>
+  <Config Name="Orphan Profile Max Age" Target="BROWSER_ORPHAN_PROFILE_MAX_AGE" Default="21600" Mode="" Description="Startup cleanup threshold in seconds for stale uc_* temp browser profiles. Set to 0 to disable startup sweep." Type="Variable" Display="advanced" Required="false" Mask="false">21600</Config>
+  <Config Name="Debug Logging" Target="STEALTH_BROWSER_DEBUG" Default="0" Mode="" Description="Set to 1 to enable verbose debug logging to stderr." Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+</Container>

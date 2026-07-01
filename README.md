@@ -25,6 +25,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_open-notebook.xml
 ```
 
+**broccoli_stealth-browser-mcp:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_stealth-browser-mcp.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_stealth-browser-mcp.xml
+```
+
 **broccoli_surrealdb:**
 ```bash
 curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.xml \
@@ -53,6 +59,11 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - `SURREAL_URL`: use `ws://surrealdb:8000/rpc` only when both containers are on a user-defined Docker network with working container DNS; if not on a user-defined network (default bridge mode), use `ws://<unraid-ip>:8000/rpc`
    - Optional but useful advanced variables in the template: `API_URL`, `OPEN_NOTEBOOK_PASSWORD`, `OPEN_NOTEBOOK_EMBEDDING_BATCH_SIZE`, `SURREAL_COMMANDS_MAX_TASKS`, `CORS_ORIGINS`
    - Example key generation: `openssl rand -base64 32`
+
+   **broccoli_stealth-browser-mcp:**
+   - `STEALTH_BROWSER_MCP_AUTH_TOKEN`: optional but strongly recommended — set a random token (e.g. `openssl rand -hex 32`) so the HTTP endpoint requires auth; without it the MCP port is open to anyone on your network
+   - The image must be built from [vibheksoni/stealth-browser-mcp](https://github.com/vibheksoni/stealth-browser-mcp) and tagged as `ghcr.io/vibheksoni/stealth-browser-mcp:latest` before the container can start
+   - After the container starts, point your MCP client to `http://<unraid-ip>:8000/mcp`
 
    **broccoli_surrealdb:**
    - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
@@ -328,6 +339,94 @@ This means the server is reachable and waiting for MCP `POST` requests on `/mcp`
 
 These templates are suitable starting points for Claude Desktop, OpenCode, Hermes, Open WebUI, LibreChat, Continue, Cline, Roo Code, and custom MCP clients.
 
+## `stealth-browser-mcp` agent connection quick start
+
+- **MCP endpoint URL:** `http://<unraid-ip>:8000/mcp`
+- **Transport:** Streamable HTTP MCP over `POST` requests
+- **Authentication:** If `STEALTH_BROWSER_MCP_AUTH_TOKEN` is set, send the following header:
+
+```http
+Authorization: Bearer <your-token>
+```
+- **Recommended headers:**
+  - `Content-Type: application/json`
+  - `Accept: application/json, text/event-stream`
+
+### Building the image
+
+The stealth-browser-mcp image is not yet published to a public registry. Build it on your Unraid host (or any Docker-capable machine) before using this template:
+
+```bash
+# On your Unraid host or another machine with Docker
+git clone https://github.com/vibheksoni/stealth-browser-mcp.git
+cd stealth-browser-mcp
+docker build -t ghcr.io/vibheksoni/stealth-browser-mcp:latest .
+```
+
+If building on a machine other than your Unraid server, push or export the image and load it on Unraid:
+
+```bash
+# Export / import across machines
+docker save ghcr.io/vibheksoni/stealth-browser-mcp:latest | gzip > stealth-browser-mcp.tar.gz
+# On Unraid:
+docker load < stealth-browser-mcp.tar.gz
+```
+
+### Validate the deployment
+
+```bash
+curl -i http://<unraid-ip>:8000/mcp
+```
+
+If `STEALTH_BROWSER_MCP_AUTH_TOKEN` is set, include the header:
+
+```bash
+curl -i -H "Authorization: Bearer <your-token>" http://<unraid-ip>:8000/mcp
+```
+
+### Example MCP client configurations
+
+> These are generic examples. Field names can vary slightly by client.
+> If `STEALTH_BROWSER_MCP_AUTH_TOKEN` is not set, omit the `headers` block.
+
+**Streamable HTTP / HTTP-style config**
+```json
+{
+  "name": "stealth-browser-local",
+  "type": "http",
+  "url": "http://<unraid-ip>:8000/mcp",
+  "headers": {
+    "Authorization": "Bearer <your-token>"
+  }
+}
+```
+
+**SSE-style config (clients that still label remote MCP as SSE)**
+```json
+{
+  "name": "stealth-browser-local",
+  "transport": "sse",
+  "url": "http://<unraid-ip>:8000/mcp",
+  "headers": {
+    "Authorization": "Bearer <your-token>"
+  }
+}
+```
+
+**Clients that use command arrays or env-injected headers**
+```json
+{
+  "mcpServers": {
+    "stealth-browser-local": {
+      "url": "http://<unraid-ip>:8000/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
+```
+
 ## Included templates
 
 <!-- TEMPLATES:START -->
@@ -353,6 +452,13 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Template: `templates/broccoli_open-notebook.xml`
 - Container image: `lfnovo/open_notebook:v1-latest`
 - Privacy-focused NotebookLM alternative. Uses the current upstream v1-latest image with separated SurrealDB. Exposes Web UI on 8502 and API on 5055 (used by open-notebook-mcp clients). Persist /app/data and keep OPEN_NOTEBOOK_ENCRYPTION_KEY stable across upgrades so provider credentials and model settings survive updates.
+
+### `broccoli_stealth-browser-mcp`
+<img src="https://raw.githubusercontent.com/vibheksoni/stealth-browser-mcp/master/media/UndetectedStealthBrowser.png" alt="broccoli_stealth-browser-mcp icon" width="64">
+
+- Template: `templates/broccoli_stealth-browser-mcp.xml`
+- Container image: `ghcr.io/vibheksoni/stealth-browser-mcp:latest`
+- Stealth browser MCP server for AI agents — bypasses Cloudflare, antibot systems, and social media blocks using nodriver + Chrome DevTools Protocol + FastMCP. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8000. Provides 97 tools across 11 sections: browser management, element interaction, element extraction, network interception, CDP function execution, and more. Set STEALTH_BROWSER_MCP_AUTH_TOKEN to enable bearer token auth for the HTTP endpoint.
 
 ### `broccoli_surrealdb`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/surrealdb.png" alt="broccoli_surrealdb icon" width="64">
