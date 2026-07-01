@@ -62,7 +62,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
 
    **broccoli_stealth-browser-mcp:**
    - `STEALTH_BROWSER_MCP_AUTH_TOKEN`: optional but strongly recommended — set a random token (e.g. `openssl rand -hex 32`) so the HTTP endpoint requires auth; without it the MCP port is open to anyone on your network
-   - The image must be built from [vibheksoni/stealth-browser-mcp](https://github.com/vibheksoni/stealth-browser-mcp) and tagged as `ghcr.io/vibheksoni/stealth-browser-mcp:latest` before the container can start
+   - The template references `ghcr.io/vibheksoni/stealth-browser-mcp:latest`; if the project maintainer has not yet published this image, build it locally — see the [stealth-browser-mcp connection quick start](#stealth-browser-mcp-agent-connection-quick-start) section below
    - After the container starts, point your MCP client to `http://<unraid-ip>:8000/mcp`
 
    **broccoli_surrealdb:**
@@ -354,7 +354,7 @@ Authorization: Bearer <your-token>
 
 ### Building the image
 
-The stealth-browser-mcp image is not yet published to a public registry. Build it on your Unraid host (or any Docker-capable machine) before using this template:
+The template references `ghcr.io/vibheksoni/stealth-browser-mcp:latest`. If the project maintainer has not yet published this image to the GitHub Container Registry, build it yourself and tag it to match:
 
 ```bash
 # On your Unraid host or another machine with Docker
