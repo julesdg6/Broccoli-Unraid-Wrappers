@@ -25,6 +25,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_open-notebo
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_open-notebook.xml
 ```
 
+**broccoli_omniroute:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_omniroute.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_omniroute.xml
+```
+
 **broccoli_surrealdb:**
 ```bash
 curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.xml \
@@ -34,6 +40,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select the desired template, then review/save.
 5. Before starting the container, set required values:
+
+   **broccoli_omniroute:**
+   - `OMNIROUTE_WS_BRIDGE_SECRET`: recommended for production — set to a strong random string (`openssl rand -hex 32`)
+   - After the container starts, open the dashboard at `http://<unraid-ip>:20128` and point coding agents (Claude Code, Codex, Cursor, Cline…) to `http://<unraid-ip>:20128/v1`
+   - Connect free providers via **Dashboard → Providers** (e.g. Kiro AI, OpenCode Free — no signup required)
+   - Copy an API key from **Dashboard → Endpoints** and use it as the `Authorization: Bearer` token in your coding tool
 
    **broccoli_github-mcp-server:**
    - `GITHUB_PERSONAL_ACCESS_TOKEN`: optional but recommended for higher API limits and private repo access
@@ -346,6 +358,13 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Template: `templates/broccoli_mcp-google-map.xml`
 - Container image: `node:20-alpine`
 - MCP server providing 18 Google Maps tools for AI agents — geocode, search, directions, weather, air quality, local rank tracking, and more. Exposes a Streamable HTTP MCP endpoint at /mcp for use with Claude Desktop, Cursor, VS Code, and other MCP clients. Requires a Google Maps API key with Places API (New) and Routes API enabled.
+
+### `broccoli_omniroute`
+<img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/omniroute.png" alt="broccoli_omniroute icon" width="64">
+
+- Template: `templates/broccoli_omniroute.xml`
+- Container image: `diegosouzapw/omniroute:latest`
+- OmniRoute — free AI gateway that connects coding agents (Claude Code, Codex, Cursor, Cline, Copilot) to 236 providers including 50+ with a free tier, through one OpenAI-compatible endpoint. Provides RTK + Caveman token compression (15–95% savings), 17 routing strategies with auto-fallback, MCP server (87 tools), A2A protocol, and an interactive dashboard. Dashboard and API both run on port 20128 (API at /v1).
 
 ### `broccoli_open-notebook`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/open-notebook.png" alt="broccoli_open-notebook icon" width="64">
