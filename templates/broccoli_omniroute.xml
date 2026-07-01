@@ -19,7 +19,7 @@
 
   <Config Name="AppData" Target="/app/data" Default="/mnt/user/appdata/broccoli_omniroute" Mode="rw" Description="Persistent data directory for provider credentials, combos, settings, and cached state. Map this to a host path so data survives container restarts and upgrades." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_omniroute</Config>
 
-  <Config Name="WebSocket Bridge Secret" Target="OMNIROUTE_WS_BRIDGE_SECRET" Default="" Mode="" Description="Required for production. Set to a strong random string (for example: openssl rand -hex 32). Secures the internal WebSocket bridge." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="WebSocket Bridge Secret" Target="OMNIROUTE_WS_BRIDGE_SECRET" Default="" Mode="" Description="Recommended for production. Set to a strong random string (for example: openssl rand -hex 32). Secures the internal WebSocket bridge." Type="Variable" Display="always" Required="false" Mask="true"></Config>
   <Config Name="Public Base URL" Target="NEXT_PUBLIC_BASE_URL" Default="" Mode="" Description="Optional. Set when OmniRoute is served behind a reverse proxy or domain (for example: https://omniroute.example.com). Used for OAuth callbacks and dashboard links." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="Node Memory (MB)" Target="OMNIROUTE_MEMORY_MB" Default="512" Mode="" Description="Node.js heap ceiling in MB for the Docker runtime. Increase if you see out-of-memory errors under heavy load (for example: 1024)." Type="Variable" Display="advanced" Required="false" Mask="false">512</Config>
 </Container>
