@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_omniroute</Name>
+  <Repository>diegosouzapw/omniroute:latest</Repository>
+  <Registry>https://hub.docker.com/r/diegosouzapw/omniroute</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/diegosouzapw/OmniRoute/issues</Support>
+  <Project>https://github.com/diegosouzapw/OmniRoute</Project>
+  <Overview>OmniRoute — free AI gateway that connects coding agents (Claude Code, Codex, Cursor, Cline, Copilot) to 236 providers including 50+ with a free tier, through one OpenAI-compatible endpoint. Provides RTK + Caveman token compression (15–95% savings), 17 routing strategies with auto-fallback, MCP server (87 tools), A2A protocol, and an interactive dashboard. Dashboard and API both run on port 20128 (API at /v1). Data is persisted in /app/data — map it to a host path so settings, provider credentials, and combos survive container restarts. Set OMNIROUTE_WS_BRIDGE_SECRET to a strong random string for production use.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:20128]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_omniroute.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/omniroute.png</Icon>
+
+  <Config Name="Dashboard / API Port" Target="20128" Default="20128" Mode="tcp" Description="Container Port: 20128 — OmniRoute dashboard and OpenAI-compatible API endpoint (/v1). Point coding agents to http://&lt;unraid-ip&gt;:20128/v1" Type="Port" Display="always" Required="true" Mask="false">20128</Config>
+
+  <Config Name="AppData" Target="/app/data" Default="/mnt/user/appdata/broccoli_omniroute" Mode="rw" Description="Persistent data directory for provider credentials, combos, settings, and cached state. Map this to a host path so data survives container restarts and upgrades." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_omniroute</Config>
+
+  <Config Name="WebSocket Bridge Secret" Target="OMNIROUTE_WS_BRIDGE_SECRET" Default="" Mode="" Description="Recommended for production. Set to a strong random string (for example: openssl rand -hex 32). Secures the internal WebSocket bridge." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Public Base URL" Target="NEXT_PUBLIC_BASE_URL" Default="" Mode="" Description="Optional. Set when OmniRoute is served behind a reverse proxy or domain (for example: https://omniroute.example.com). Used for OAuth callbacks and dashboard links." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Node Memory (MB)" Target="OMNIROUTE_MEMORY_MB" Default="512" Mode="" Description="Node.js heap ceiling in MB for the Docker runtime. Increase if you see out-of-memory errors under heavy load (for example: 1024)." Type="Variable" Display="advanced" Required="false" Mask="false">512</Config>
+</Container>
