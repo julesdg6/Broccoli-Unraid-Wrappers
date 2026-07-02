@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_norns-desktop</Name>
+  <Repository>schollz/norns:dust</Repository>
+  <Registry>https://hub.docker.com/r/schollz/norns</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/schollz/norns-desktop/issues</Support>
+  <Project>https://github.com/schollz/norns-desktop</Project>
+  <Overview>norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio.</Overview>
+  <Category>MediaApp:Audio</Category>
+  <WebUI>http://[IP]:[PORT:5000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_norns-desktop.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/norns-desktop.png</Icon>
+  <ExtraParams>--cap-add=SYS_NICE --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --ulimit rtprio=95 --ulimit memlock=-1 --shm-size=256m --device /dev/snd --group-add audio</ExtraParams>
+
+  <Config Name="Maiden Web UI Port" Target="5000" Default="5000" Mode="tcp" Description="Container Port: 5000 - maiden web UI" Type="Port" Display="always" Required="true" Mask="false">5000</Config>
+  <Config Name="Norns Screen Port" Target="8889" Default="8889" Mode="tcp" Description="Container Port: 8889 - browser norns screen" Type="Port" Display="always" Required="true" Mask="false">8889</Config>
+  <Config Name="Audio Stream Port" Target="8000" Default="8000" Mode="tcp" Description="Container Port: 8000 - MP3 audio stream at /radio.mp3" Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+  <Config Name="Matron WebSocket Port" Target="5555" Default="5555" Mode="tcp" Description="Container Port: 5555 - norns matron WebSocket" Type="Port" Display="advanced" Required="false" Mask="false">5555</Config>
+  <Config Name="SuperCollider WebSocket Port" Target="5556" Default="5556" Mode="tcp" Description="Container Port: 5556 - SuperCollider WebSocket" Type="Port" Display="advanced" Required="false" Mask="false">5556</Config>
+  <Config Name="Norns UDP Port" Target="10111" Default="10111" Mode="udp" Description="Container UDP Port: 10111" Type="Port" Display="advanced" Required="false" Mask="false">10111</Config>
+
+  <Config Name="Dust AppData" Target="/home/we/dust" Default="/mnt/user/appdata/broccoli_norns-desktop" Mode="rw" Description="Persistent norns data/scripts" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_norns-desktop</Config>
+  <Config Name="Jackd Config" Target="/etc/jackdrc" Default="/mnt/user/appdata/broccoli_norns-desktop/jackdrc" Mode="rw" Description="Host path to jackdrc. Create this file first to match your audio device." Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/broccoli_norns-desktop/jackdrc</Config>
+</Container>
