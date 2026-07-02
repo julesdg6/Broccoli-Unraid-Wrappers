@@ -14,7 +14,7 @@
   <WebUI>http://[IP]:[PORT:5000]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_norns-desktop.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/norns-desktop.png</Icon>
-  <ExtraParams>--cap-add=SYS_NICE --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --ulimit rtprio=95 --ulimit memlock=-1 --shm-size=256m --device /dev/snd --group-add audio</ExtraParams>
+  <ExtraParams>--tty --cap-add=SYS_NICE --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --ulimit rtprio=95 --ulimit memlock=-1 --shm-size=256m --device /dev/snd --group-add audio</ExtraParams>
 
   <Config Name="Maiden Web UI Port" Target="5000" Default="5000" Mode="tcp" Description="Container Port: 5000 - maiden web UI" Type="Port" Display="always" Required="true" Mask="false">5000</Config>
   <Config Name="Norns Screen Port" Target="8889" Default="8889" Mode="tcp" Description="Container Port: 8889 - browser norns screen" Type="Port" Display="always" Required="true" Mask="false">8889</Config>
