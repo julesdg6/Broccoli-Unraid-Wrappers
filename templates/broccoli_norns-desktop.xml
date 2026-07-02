@@ -24,5 +24,5 @@
   <Config Name="Norns UDP Port" Target="10111" Default="10111" Mode="udp" Description="Container UDP Port: 10111" Type="Port" Display="advanced" Required="false" Mask="false">10111</Config>
 
   <Config Name="Dust AppData" Target="/home/we/dust" Default="/mnt/user/appdata/broccoli_norns-desktop" Mode="rw" Description="Persistent norns data/scripts" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_norns-desktop</Config>
-  <Config Name="Jackd Config" Target="/etc/jackdrc" Default="/mnt/user/appdata/broccoli_norns-desktop/jackdrc" Mode="rw" Description="Host path to jackdrc. Create this file first to match your audio device." Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/broccoli_norns-desktop/jackdrc</Config>
+  <Config Name="Jackd Config Override" Target="/etc/jackdrc" Default="" Mode="rw" Description="Optional host file to bind-mount over /etc/jackdrc. Leave blank to use the container default. If you set this, create the host file first so Docker does not create a directory." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
 </Container>
