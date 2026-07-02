@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_maestro-mcp</Name>
+  <Repository>node:20-alpine</Repository>
+  <Registry>https://hub.docker.com/_/node</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/sharpdeveye/maestro/issues</Support>
+  <Project>https://github.com/sharpdeveye/maestro</Project>
+  <Overview>Maestro MCP server for AI agent workflow optimization. Exposes a Streamable HTTP MCP endpoint at /mcp on port 3001. Provides 25 commands (diagnose, refine, fortify, streamline, and more), 10 tools, and 8 skill resources to help AI agents avoid common workflow anti-patterns with domain-specific guidance for prompt engineering, context management, tool orchestration, and agent architecture. Health check available at /health.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:3001]/health</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_maestro-mcp.xml</TemplateURL>
+  <Icon>https://github.com/sharpdeveye.png</Icon>
+  <ExtraParams>--entrypoint sh</ExtraParams>
+  <PostArgs>-c &quot;npx --yes maestro-workflow-mcp --http --port 3001&quot;</PostArgs>
+
+  <Config Name="MCP HTTP Port" Target="3001" Default="3001" Mode="tcp" Description="Container Port: 3001 — MCP Streamable HTTP endpoint at /mcp. Point your MCP client to http://&lt;unraid-ip&gt;:3001/mcp" Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+</Container>

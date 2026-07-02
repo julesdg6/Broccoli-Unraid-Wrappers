@@ -49,6 +49,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_surrealdb.xml
 ```
 
+**broccoli_maestro-mcp:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_maestro-mcp.xml
+```
+
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select the desired template, then review/save.
 5. Before starting the container, set required values:
@@ -94,6 +100,10 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - `STEALTH_BROWSER_MCP_AUTH_TOKEN`: optional but strongly recommended — set a random token (e.g. `openssl rand -hex 32`) so the HTTP endpoint requires auth; without it the MCP port is open to anyone on your network
    - The template references `ghcr.io/vibheksoni/stealth-browser-mcp:latest`; if the project maintainer has not yet published this image, build it locally — see the [stealth-browser-mcp connection quick start](#stealth-browser-mcp-agent-connection-quick-start) section below
    - After the container starts, point your MCP client to `http://<unraid-ip>:8000/mcp`
+
+   **broccoli_maestro-mcp:**
+   - No required configuration — the container starts immediately and the MCP endpoint is available at `http://<unraid-ip>:3001/mcp`
+   - No authentication is built in; keep the MCP port within your trusted network or use a reverse proxy to add auth
 
    **broccoli_surrealdb:**
    - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
@@ -485,6 +495,59 @@ curl -i -H "Authorization: Bearer <your-token>" http://<unraid-ip>:8000/mcp
 }
 ```
 
+## `maestro-mcp` agent connection quick start
+
+- **MCP endpoint URL:** `http://<unraid-ip>:3001/mcp`
+- **Transport:** Streamable HTTP MCP over `POST` requests
+- **Authentication:** None required
+
+### Validate the deployment
+
+```bash
+curl -sS http://<unraid-ip>:3001/health
+```
+
+Expected response (version number will reflect the installed release):
+
+```json
+{"status":"ok","server":"maestro-workflow-mcp","version":"<version>"}
+```
+
+### Example MCP client configurations
+
+> These are generic examples. Field names can vary slightly by client.
+
+**Streamable HTTP / HTTP-style config**
+```json
+{
+  "name": "maestro-local",
+  "type": "http",
+  "url": "http://<unraid-ip>:3001/mcp"
+}
+```
+
+**SSE-style config (clients that still label remote MCP as SSE)**
+```json
+{
+  "name": "maestro-local",
+  "transport": "sse",
+  "url": "http://<unraid-ip>:3001/mcp"
+}
+```
+
+**Clients that use command arrays**
+```json
+{
+  "mcpServers": {
+    "maestro-local": {
+      "url": "http://<unraid-ip>:3001/mcp"
+    }
+  }
+}
+```
+
+These templates are suitable starting points for Claude Desktop, Cursor, VS Code Copilot, Gemini CLI, OpenCode, and other MCP-compatible clients. After connecting, use any of the 25 commands (e.g. `/diagnose`, `/refine`, `/fortify`) in your AI coding agent.
+
 ## Included templates
 
 <!-- TEMPLATES:START -->
@@ -496,6 +559,13 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Template: `templates/broccoli_github-mcp-server.xml`
 - Container image: `ghcr.io/github/github-mcp-server:latest`
 - GitHub MCP server for AI agents. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8082 (GET /mcp returns 405 with Allow: POST when healthy).
+
+### `broccoli_maestro-mcp`
+<img src="https://github.com/sharpdeveye.png" alt="broccoli_maestro-mcp icon" width="64">
+
+- Template: `templates/broccoli_maestro-mcp.xml`
+- Container image: `node:20-alpine`
+- Maestro MCP server for AI agent workflow optimization. Exposes a Streamable HTTP MCP endpoint at /mcp on port 3001. Provides 25 commands (diagnose, refine, fortify, streamline, and more), 10 tools, and 8 skill resources to help AI agents avoid common workflow anti-patterns with domain-specific guidance for prompt engineering, context management, tool orchestration, and agent architecture. Health check available at /health.
 
 ### `broccoli_mcp-google-map`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/mcp-google-map.png" alt="broccoli_mcp-google-map icon" width="64">
