@@ -79,6 +79,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
    - Ensure your Unraid host exposes `/dev/snd` to Docker and has an `audio` group available
    - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data
    - Optional: only set the advanced `Jackd Config Override` path after you create a real host file such as `/mnt/user/appdata/broccoli_norns-desktop/jackdrc`; otherwise leave it blank to use the container default
+   - The template includes `--tty` in Extra Parameters so that the container's `tmuxp`-based startup can allocate a pseudo-terminal; without it the container exits immediately with `open terminal failed: not a terminal`
    - After the container starts:
      - maiden UI: `http://<unraid-ip>:5000`
      - norns screen: `http://<unraid-ip>:8889`
