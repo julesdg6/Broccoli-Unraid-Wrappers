@@ -72,7 +72,7 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_surrealdb.x
    - Uses image `schollz/norns:dust` from the upstream norns-desktop workflow (linux/amd64)
    - Ensure your Unraid host exposes `/dev/snd` to Docker and has an `audio` group available
    - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data
-   - Create `/mnt/user/appdata/broccoli_norns-desktop/jackdrc` with your audio device config
+   - Optional: only set the advanced `Jackd Config Override` path after you create a real host file such as `/mnt/user/appdata/broccoli_norns-desktop/jackdrc`; otherwise leave it blank to use the container default
    - After the container starts:
      - maiden UI: `http://<unraid-ip>:5000`
      - norns screen: `http://<unraid-ip>:8889`
