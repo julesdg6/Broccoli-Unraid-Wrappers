@@ -507,10 +507,10 @@ curl -i -H "Authorization: Bearer <your-token>" http://<unraid-ip>:8000/mcp
 curl -sS http://<unraid-ip>:3001/health
 ```
 
-Expected response:
+Expected response (version number will reflect the installed release):
 
 ```json
-{"status":"ok","server":"maestro-workflow-mcp","version":"2.0.1"}
+{"status":"ok","server":"maestro-workflow-mcp","version":"<version>"}
 ```
 
 ### Example MCP client configurations
