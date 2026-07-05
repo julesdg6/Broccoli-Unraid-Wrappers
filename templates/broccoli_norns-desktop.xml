@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/schollz/norns-desktop/issues</Support>
   <Project>https://github.com/schollz/norns-desktop</Project>
-  <Overview>norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio.</Overview>
+  <Overview>norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio. Servers without a real sound card must supply a jackdrc file using the dummy driver (see Jackd Config Override).</Overview>
   <Category>MediaApp:Audio</Category>
   <WebUI>http://[IP]:[PORT:5000]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_norns-desktop.xml</TemplateURL>
@@ -24,5 +24,5 @@
   <Config Name="Norns UDP Port" Target="10111" Default="10111" Mode="udp" Description="Container UDP Port: 10111" Type="Port" Display="advanced" Required="false" Mask="false">10111</Config>
 
   <Config Name="Dust AppData" Target="/home/we/dust" Default="/mnt/user/appdata/broccoli_norns-desktop" Mode="rw" Description="Persistent norns data/scripts" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_norns-desktop</Config>
-  <Config Name="Jackd Config Override" Target="/etc/jackdrc" Default="" Mode="rw" Description="Optional host file to bind-mount over /etc/jackdrc. Leave blank to use the container default. If you set this, create the host file first so Docker does not create a directory." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Jackd Config Override" Target="/etc/jackdrc" Default="" Mode="rw" Description="Host file bind-mounted over /etc/jackdrc. REQUIRED for servers with no real audio hardware: create the host file first (e.g. /mnt/user/appdata/broccoli_norns-desktop/jackdrc) containing exactly one line: /usr/bin/jackd -R -P 95 -d dummy -p 1024 — then set this field to that path. For real ALSA hardware use: /usr/bin/jackd -R -P 95 -d alsa -P hw:0 -C hw:0. Without this file on a server without audio hardware jackd will crash with signal 11." Type="Path" Display="always" Required="false" Mask="false"></Config>
 </Container>
