@@ -77,13 +77,20 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
    **broccoli_norns-desktop:**
    - Uses image `schollz/norns:dust` from the upstream norns-desktop workflow (linux/amd64)
    - Ensure your Unraid host exposes `/dev/snd` to Docker and has an `audio` group available
-   - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data
-   - Optional: only set the advanced `Jackd Config Override` path after you create a real host file such as `/mnt/user/appdata/broccoli_norns-desktop/jackdrc`; otherwise leave it blank to use the container default
+   - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data before starting the container
+   - **If your server has no real sound card (most Unraid NAS/server builds):** you must supply a jackdrc file that uses the ALSA dummy driver, otherwise jackd will crash immediately with `signal 11`. Do this once on your Unraid host before starting the container:
+     ```bash
+     mkdir -p /mnt/user/appdata/broccoli_norns-desktop
+     echo '/usr/bin/jackd -R -P 95 -d dummy -p 1024' > /mnt/user/appdata/broccoli_norns-desktop/jackdrc
+     ```
+     Then set the `Jackd Config Override` template field to `/mnt/user/appdata/broccoli_norns-desktop/jackdrc`.
+   - **If your server does have a real sound card:** leave `Jackd Config Override` blank to use the container default, or point it to a jackdrc file with your ALSA device (e.g. `/usr/bin/jackd -R -P 95 -d alsa -P hw:0 -C hw:0`).
+   - **Write permissions:** the container startup automatically runs `sudo chown -R we:we /home/we/dust` (the `we` user is UID/GID 1000). If you pre-create the appdata directory, no extra permission steps are needed. If maiden returns 500 on file writes, check that `/mnt/user/appdata/broccoli_norns-desktop` is not owned exclusively by a user other than UID 1000 with mode 700.
    - The template includes `--tty` in Extra Parameters so that the container's `tmuxp`-based startup can allocate a pseudo-terminal; without it the container exits immediately with `open terminal failed: not a terminal`
    - After the container starts:
      - maiden UI: `http://<unraid-ip>:5000`
      - norns screen: `http://<unraid-ip>:8889`
-     - audio stream: `http://<unraid-ip>:8000/radio.mp3`
+     - audio stream: `http://<unraid-ip>:8000/radio.mp3` (requires jackd to be running; with the dummy driver the stream encodes silence)
 
    **broccoli_open-notebook:**
    - Depends on `broccoli_surrealdb` (or another reachable SurrealDB instance) running with matching credentials
@@ -580,7 +587,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_norns-desktop.xml`
 - Container image: `schollz/norns:dust`
-- norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio.
+- norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio. Servers without a real sound card must supply a jackdrc file using the dummy driver (see Jackd Config Override).
 
 ### `broccoli_omniroute`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/omniroute.png" alt="broccoli_omniroute icon" width="64">
