@@ -78,9 +78,10 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
    - Uses image `schollz/norns:dust` from the upstream norns-desktop workflow (linux/amd64)
    - Ensure your Unraid host exposes `/dev/snd` to Docker and has an `audio` group available
    - Create `/mnt/user/appdata/broccoli_norns-desktop` for persistent norns `dust` data before starting the container
+   - **Runtime UID/GID (PUID/PGID):** the template defaults to `PUID=99` / `PGID=100` (Unraid's standard `nobody:users` ownership) so a fresh installation works without manually changing host directory permissions. If your appdata directory is owned by a different UID/GID (e.g. `1000:1000`), set `PUID` and `PGID` in the template to match. On startup the wrapper remaps the `we` user to the configured UID/GID, so the container always runs with the correct permissions.
    - **jackd is configured automatically:** if no `Jackd Config Override` file is mounted, startup creates `/etc/jackdrc` with the dummy ALSA driver (`/usr/bin/jackd -R -P 95 -d dummy -p 1024`). This works on any Unraid server, including those without a real sound card, with no manual setup required.
    - **If your server does have a real sound card:** create a host file with your ALSA jackd command (e.g. `/usr/bin/jackd -R -P 95 -d alsa -P hw:0 -C hw:0`) and set the `Jackd Config Override` template field to point to it. Leave `Jackd Config Override` blank to keep using the dummy driver default.
-   - **Write permissions and first-run setup:** container startup creates `/home/we/dust/{code,data,audio,jackdrc}`, runs `chown -R we:we /home/we/dust`, and verifies those paths are writable by user `we` (UID/GID 1000) before launching norns. If this check fails, startup exits with a clear permission error so the volume ownership can be fixed on the Unraid host.
+   - **Write permissions and first-run setup:** container startup remaps `we` to PUID:PGID, creates `/home/we/dust/{code,data,audio,jackdrc}`, runs `chown -R $PUID:$PGID /home/we/dust`, and verifies those paths are writable by user `we` before launching norns. If this check fails, startup exits with a clear permission error.
    - The template includes `--tty` in Extra Parameters so that the container's `tmuxp`-based startup can allocate a pseudo-terminal; without it the container exits immediately with `open terminal failed: not a terminal`
    - After the container starts:
      - maiden UI: `http://<unraid-ip>:5000`
@@ -582,7 +583,7 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 
 - Template: `templates/broccoli_norns-desktop.xml`
 - Container image: `schollz/norns:dust`
-- norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio. On startup, the wrapper initializes `/home/we/dust` (`code`, `data`, `audio`, `jackdrc`), verifies write access for user `we` (UID/GID 1000), and fails with a clear message if permissions are incorrect. If no Jackd Config Override file is mounted, startup automatically creates `/etc/jackdrc` with the dummy driver — no manual jackdrc setup required.
+- norns on Docker for browser-based testing. Exposes maiden on 5000, norns screen at 8889, and audio stream at 8000/radio.mp3. Requires /dev/snd and realtime container permissions for audio. Supports configurable runtime UID/GID via PUID and PGID (default 99:100 matching standard Unraid nobody:users appdata ownership) so the container runs as the correct user without manual host permission changes. On startup, the wrapper remaps the `we` user to the configured PUID/PGID, initializes `/home/we/dust` (`code`, `data`, `audio`, `jackdrc`), verifies write access, and fails with a clear message if permissions are incorrect. If no Jackd Config Override file is mounted, startup automatically creates `/etc/jackdrc` with the dummy driver — no manual jackdrc setup required.
 
 ### `broccoli_omniroute`
 <img src="https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/icons/omniroute.png" alt="broccoli_omniroute icon" width="64">
