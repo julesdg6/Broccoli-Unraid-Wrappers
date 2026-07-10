@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_davinci-resolve-mcp</Name>
+  <Repository>node:20-alpine</Repository>
+  <Registry>https://hub.docker.com/_/node</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/samuelgursky/davinci-resolve-mcp/issues</Support>
+  <Project>https://github.com/samuelgursky/davinci-resolve-mcp</Project>
+  <Overview>DaVinci Resolve advanced MCP server for AI agents — reads and edits DaVinci Resolve project files (.drp), timelines (.drt), and grade files (.drx) with no Resolve installation required. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8765 via supergateway. Provides 18 tools for project inspection, grade extraction and application, timeline editing, conform QC, audio planning, Fairlight bus routing, and post-production pipeline management. Mount your Resolve project directory and pass container paths (e.g. /projects/mymovie.drp) to the MCP tools.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8765]/mcp</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_davinci-resolve-mcp.xml</TemplateURL>
+  <Icon>https://github.com/samuelgursky.png</Icon>
+  <ExtraParams>--entrypoint sh</ExtraParams>
+  <PostArgs>-c &quot;npx --yes --package=davinci-resolve-mcp --package=supergateway supergateway --port 8765 --stdio davinci-resolve-advanced-mcp&quot;</PostArgs>
+
+  <Config Name="MCP HTTP Port" Target="8765" Default="8765" Mode="tcp" Description="Container Port: 8765 — MCP Streamable HTTP endpoint at /mcp. Point your MCP client to http://&lt;unraid-ip&gt;:8765/mcp" Type="Port" Display="always" Required="true" Mask="false">8765</Config>
+
+  <Config Name="DaVinci Resolve Projects Path" Target="/projects" Default="/mnt/user/resolve-projects" Mode="rw" Description="Host path containing your DaVinci Resolve project files (.drp, .drt, .drx). Inside the container this maps to /projects — pass /projects/filename.drp to the MCP tools. Leave blank if you prefer to pass absolute host paths after mounting elsewhere." Type="Path" Display="always" Required="false" Mask="false">/mnt/user/resolve-projects</Config>
+</Container>

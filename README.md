@@ -55,6 +55,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_maestro-mcp.xml
 ```
 
+**broccoli_davinci-resolve-mcp:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_davinci-resolve-mcp.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_davinci-resolve-mcp.xml
+```
+
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select the desired template, then review/save.
 5. Before starting the container, set required values:
@@ -107,6 +113,11 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
 
    **broccoli_maestro-mcp:**
    - No required configuration — the container starts immediately and the MCP endpoint is available at `http://<unraid-ip>:3001/mcp`
+   - No authentication is built in; keep the MCP port within your trusted network or use a reverse proxy to add auth
+
+   **broccoli_davinci-resolve-mcp:**
+   - No required configuration — on first start the container downloads and installs `davinci-resolve-mcp` and `supergateway`, then the MCP endpoint becomes available at `http://<unraid-ip>:8765/mcp` (allow a minute for initial package install)
+   - Optional: set the **DaVinci Resolve Projects Path** to a host directory containing your `.drp`, `.drt`, or `.drx` files; tools can reference them by their container path (for example `/projects/mymovie.drp`)
    - No authentication is built in; keep the MCP port within your trusted network or use a reverse proxy to add auth
 
    **broccoli_surrealdb:**
@@ -552,10 +563,78 @@ Expected response (version number will reflect the installed release):
 
 These templates are suitable starting points for Claude Desktop, Cursor, VS Code Copilot, Gemini CLI, OpenCode, and other MCP-compatible clients. After connecting, use any of the 25 commands (e.g. `/diagnose`, `/refine`, `/fortify`) in your AI coding agent.
 
+## `davinci-resolve-mcp` agent connection quick start
+
+- **MCP endpoint URL:** `http://<unraid-ip>:8765/mcp`
+- **Transport:** Streamable HTTP MCP over `POST` requests
+- **Authentication:** None required
+
+### What this server provides
+
+This template runs the **DaVinci Resolve Advanced MCP server** (`davinci-resolve-advanced-mcp`) — the offline, file-based sibling of the live DaVinci Resolve MCP server. It reads and edits DaVinci Resolve files directly, with no running Resolve installation required. Provides 18 tools including:
+
+- **`drp`** — inspect and modify DaVinci Resolve project files (`.drp`)
+- **`drt`** — read and edit timeline files (`.drt`)
+- **`drx`** — extract, apply, and author grade files (`.drx`), including offline colour grading
+- **`conform`** — frame-oracle conform/relink QC and lineage tracking
+- **`color_trace`** — carry grades across re-conforms
+- **`pipeline`** — DB-as-truth post-production pipeline management
+- **`project_db`**, **`project_read`** — project and database inspection
+- **`fusion`**, **`audio`**, **`audio_plan`**, **`fairlight`** — Fusion compositions, audio planning, and bus routing
+- **`deliverable`**, **`media`**, **`editorial`**, **`provenance`** — QC, media management, editorial integrity, and audit
+
+### Validate the deployment
+
+```bash
+curl -i http://<unraid-ip>:8765/mcp
+```
+
+### Example MCP client configurations
+
+> These are generic examples. Field names can vary slightly by client.
+
+**Streamable HTTP / HTTP-style config**
+```json
+{
+  "name": "davinci-resolve-local",
+  "type": "http",
+  "url": "http://<unraid-ip>:8765/mcp"
+}
+```
+
+**SSE-style config (clients that still label remote MCP as SSE)**
+```json
+{
+  "name": "davinci-resolve-local",
+  "transport": "sse",
+  "url": "http://<unraid-ip>:8765/mcp"
+}
+```
+
+**Clients that use command arrays**
+```json
+{
+  "mcpServers": {
+    "davinci-resolve-local": {
+      "url": "http://<unraid-ip>:8765/mcp"
+    }
+  }
+}
+```
+
+These templates are suitable starting points for Claude Desktop, Cursor, VS Code Copilot, Gemini CLI, OpenCode, and other MCP-compatible clients.
+
 ## Included templates
 
 <!-- TEMPLATES:START -->
 This repository provides Unraid Docker templates and matching icons for self-hosted apps.
+
+### `broccoli_davinci-resolve-mcp`
+<img src="https://github.com/samuelgursky.png" alt="broccoli_davinci-resolve-mcp icon" width="64">
+
+- Template: `templates/broccoli_davinci-resolve-mcp.xml`
+- Container image: `node:20-alpine`
+- DaVinci Resolve advanced MCP server for AI agents — reads and edits DaVinci Resolve project files (.drp), timelines (.drt), and grade files (.drx) with no Resolve installation required. Exposes a Streamable HTTP MCP endpoint at /mcp on port 8765 via supergateway. Provides 18 tools for project inspection, grade extraction and application, timeline editing, conform QC, audio planning, Fairlight bus routing, and post-production pipeline management. Mount your Resolve project directory and pass container paths (e.g. /projects/mymovie.drp) to the MCP tools.
 
 ### `broccoli_github-mcp-server`
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="broccoli_github-mcp-server icon" width="64">
