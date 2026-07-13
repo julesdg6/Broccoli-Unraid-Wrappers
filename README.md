@@ -580,11 +580,11 @@ These templates are suitable starting points for Claude Desktop, Cursor, VS Code
 This repository provides Unraid Docker templates and matching icons for self-hosted apps.
 
 ### `broccoli_ai-trading-agent`
-<img src="https://avatars.githubusercontent.com/u/gajesh2007?v=4" alt="broccoli_ai-trading-agent icon" width="64">
+<img src="https://avatars.githubusercontent.com/gajesh2007?v=4" alt="broccoli_ai-trading-agent icon" width="64">
 
 - Template: `templates/broccoli_ai-trading-agent.xml`
 - Container image: `ghcr.io/gajesh2007/ai-trading-agent:latest`
-- Nocturne — AI trading agent for the Hyperliquid decentralised exchange. Uses an LLM (via OpenRouter) to analyse real-time technical indicators from TAAPI and make buy/sell/hold decisions in a continuous loop with configurable take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. Exposes a minimal HTTP API on port 3000: GET /diary returns recent trade decisions as JSON, GET /logs tails log files. SECURITY WARNING: this container controls a live trading wallet — set HYPERLIQUID_NETWORK=testnet while validating your setup and never expose port 3000 beyond your trusted network. If the maintainer has not yet published the GHCR image, build it locally: git clone https://github.com/Gajesh2007/ai-trading-agent && docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .
+- Nocturne — AI trading agent for Hyperliquid. Uses an LLM (via OpenRouter) to analyse real-time TAAPI technical indicators and make buy/sell/hold decisions in a continuous loop with take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. API on port 3000: GET /diary (trade decisions), GET /logs (log tail). Use HYPERLIQUID_NETWORK=testnet to validate before live trading. If the GHCR image is not yet published, build locally: git clone https://github.com/Gajesh2007/ai-trading-agent && docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .
 
 ### `broccoli_github-mcp-server`
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="broccoli_github-mcp-server icon" width="64">

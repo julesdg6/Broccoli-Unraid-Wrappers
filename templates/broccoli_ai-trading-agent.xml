@@ -9,11 +9,11 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/Gajesh2007/ai-trading-agent/issues</Support>
   <Project>https://github.com/Gajesh2007/ai-trading-agent</Project>
-  <Overview>Nocturne — AI trading agent for the Hyperliquid decentralised exchange. Uses an LLM (via OpenRouter) to analyse real-time technical indicators from TAAPI and make buy/sell/hold decisions in a continuous loop with configurable take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. Exposes a minimal HTTP API on port 3000: GET /diary returns recent trade decisions as JSON, GET /logs tails log files. SECURITY WARNING: this container controls a live trading wallet — set HYPERLIQUID_NETWORK=testnet while validating your setup and never expose port 3000 beyond your trusted network. If the maintainer has not yet published the GHCR image, build it locally: git clone https://github.com/Gajesh2007/ai-trading-agent &amp;&amp; docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .</Overview>
+  <Overview>Nocturne — AI trading agent for Hyperliquid. Uses an LLM (via OpenRouter) to analyse real-time TAAPI technical indicators and make buy/sell/hold decisions in a continuous loop with take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. API on port 3000: GET /diary (trade decisions), GET /logs (log tail). Use HYPERLIQUID_NETWORK=testnet to validate before live trading. If the GHCR image is not yet published, build locally: git clone https://github.com/Gajesh2007/ai-trading-agent &amp;&amp; docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .</Overview>
   <Category>Tools:</Category>
   <WebUI>http://[IP]:[PORT:3000]/diary</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_ai-trading-agent.xml</TemplateURL>
-  <Icon>https://avatars.githubusercontent.com/u/gajesh2007?v=4</Icon>
+  <Icon>https://avatars.githubusercontent.com/gajesh2007?v=4</Icon>
 
   <Config Name="API Port" Target="3000" Default="3000" Mode="tcp" Description="Container Port: 3000 — minimal HTTP API. GET /diary returns recent trade decisions as JSON; GET /logs?path=llm_requests.log tails log files. Keep this port within your trusted network only." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
 
