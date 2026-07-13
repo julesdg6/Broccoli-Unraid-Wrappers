@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_ai-trading-agent</Name>
+  <Repository>ghcr.io/gajesh2007/ai-trading-agent:latest</Repository>
+  <Registry>https://github.com/Gajesh2007/ai-trading-agent/pkgs/container/ai-trading-agent</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/Gajesh2007/ai-trading-agent/issues</Support>
+  <Project>https://github.com/Gajesh2007/ai-trading-agent</Project>
+  <Overview>Nocturne — AI trading agent for Hyperliquid. Uses an LLM (via OpenRouter) to analyse real-time TAAPI technical indicators and make buy/sell/hold decisions in a continuous loop with take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. API on port 3000: GET /diary (trade decisions), GET /logs (log tail). Use HYPERLIQUID_NETWORK=testnet to validate before live trading. If the GHCR image is not yet published, build locally: git clone https://github.com/Gajesh2007/ai-trading-agent &amp;&amp; docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:3000]/diary</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_ai-trading-agent.xml</TemplateURL>
+  <Icon>https://avatars.githubusercontent.com/gajesh2007?v=4</Icon>
+
+  <Config Name="API Port" Target="3000" Default="3000" Mode="tcp" Description="Container Port: 3000 — minimal HTTP API. GET /diary returns recent trade decisions as JSON; GET /logs?path=llm_requests.log tails log files. Keep this port within your trusted network only." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+
+  <Config Name="TAAPI API Key" Target="TAAPI_API_KEY" Default="" Mode="" Description="Required. API key from https://taapi.io — used to fetch technical indicators (RSI, EMA, etc.) for trade decisions." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Hyperliquid Private Key" Target="HYPERLIQUID_PRIVATE_KEY" Default="" Mode="" Description="Required. Ethereum-compatible private key (0x-prefixed) for your Hyperliquid trading wallet. Generate a dedicated wallet for this bot and NEVER share this key." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="OpenRouter API Key" Target="OPENROUTER_API_KEY" Default="" Mode="" Description="Required. API key from https://openrouter.ai — used to call LLM models for trading decisions." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Assets" Target="ASSETS" Default="BTC ETH" Mode="" Description="Required. Space- or comma-separated list of assets to trade (e.g. BTC ETH SOL). Only perpetuals available on Hyperliquid are supported." Type="Variable" Display="always" Required="true" Mask="false">BTC ETH</Config>
+  <Config Name="Interval" Target="INTERVAL" Default="1h" Mode="" Description="Required. Trading loop interval — how often the agent runs its analysis cycle. Examples: 5m (5 minutes), 1h (1 hour), 1d (1 day)." Type="Variable" Display="always" Required="true" Mask="false">1h</Config>
+  <Config Name="LLM Model" Target="LLM_MODEL" Default="x-ai/grok-4" Mode="" Description="OpenRouter model name used for trading decisions. See https://openrouter.ai/models for the full list. Examples: x-ai/grok-4, anthropic/claude-opus-4." Type="Variable" Display="always" Required="false" Mask="false">x-ai/grok-4</Config>
+  <Config Name="Hyperliquid Network" Target="HYPERLIQUID_NETWORK" Default="mainnet" Mode="" Description="Hyperliquid network to use. Set to testnet while validating your configuration; switch to mainnet for live trading." Type="Variable" Display="always" Required="false" Mask="false">mainnet</Config>
+  <Config Name="OpenRouter Base URL" Target="OPENROUTER_BASE_URL" Default="https://openrouter.ai/api/v1" Mode="" Description="Optional. Override only if using a self-hosted or custom OpenRouter-compatible endpoint." Type="Variable" Display="advanced" Required="false" Mask="false">https://openrouter.ai/api/v1</Config>
+  <Config Name="OpenRouter Referer" Target="OPENROUTER_REFERER" Default="" Mode="" Description="Optional. HTTP Referer header sent to OpenRouter for request attribution (e.g. https://your-site.com)." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="OpenRouter App Title" Target="OPENROUTER_APP_TITLE" Default="trading-agent" Mode="" Description="Optional. App title sent to OpenRouter for attribution in your OpenRouter usage dashboard." Type="Variable" Display="advanced" Required="false" Mask="false">trading-agent</Config>
+  <Config Name="Reasoning Enabled" Target="REASONING_ENABLED" Default="false" Mode="" Description="Set to true to enable LLM reasoning tokens (extended chain-of-thought). May improve decision quality but increases latency and API cost." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Reasoning Effort" Target="REASONING_EFFORT" Default="high" Mode="" Description="Reasoning effort level when REASONING_ENABLED=true. Options: low, medium, high." Type="Variable" Display="advanced" Required="false" Mask="false">high</Config>
+  <Config Name="API Host" Target="API_HOST" Default="0.0.0.0" Mode="" Description="Bind address for the internal API server. Leave as 0.0.0.0 to accept connections on all interfaces inside the container." Type="Variable" Display="advanced" Required="false" Mask="false">0.0.0.0</Config>
+</Container>

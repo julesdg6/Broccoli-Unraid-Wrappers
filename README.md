@@ -55,6 +55,12 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
   https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_maestro-mcp.xml
 ```
 
+**broccoli_ai-trading-agent:**
+```bash
+curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_ai-trading-agent.xml \
+  https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_ai-trading-agent.xml
+```
+
 3. In the Unraid web UI, go to **Docker** → **Add Container**.
 4. In the template dropdown, select the desired template, then review/save.
 5. Before starting the container, set required values:
@@ -108,6 +114,22 @@ curl -fsSL -o /boot/config/plugins/dockerMan/templates-user/broccoli_maestro-mcp
    **broccoli_maestro-mcp:**
    - No required configuration — the container starts immediately and the MCP endpoint is available at `http://<unraid-ip>:3001/mcp`
    - No authentication is built in; keep the MCP port within your trusted network or use a reverse proxy to add auth
+
+   **broccoli_ai-trading-agent:**
+   - `TAAPI_API_KEY`: sign up at [taapi.io](https://taapi.io/) and generate an API key from your dashboard
+   - `HYPERLIQUID_PRIVATE_KEY`: generate a **dedicated** Ethereum-compatible wallet for this bot (MetaMask, `eth_account`, or any wallet tool); prefix the raw private key with `0x`. **Never reuse your main wallet private key.**
+   - `OPENROUTER_API_KEY`: create an account at [openrouter.ai](https://openrouter.ai/) and generate an API key
+   - `ASSETS`: space- or comma-separated perpetual tickers supported on Hyperliquid (e.g. `BTC ETH SOL`)
+   - `INTERVAL`: analysis loop period — `5m`, `1h`, `1d`, etc.
+   - `LLM_MODEL`: any model slug from the [OpenRouter models list](https://openrouter.ai/models) (default: `x-ai/grok-4`)
+   - **Set `HYPERLIQUID_NETWORK=testnet` while validating your setup** before switching to `mainnet` for live trading
+   - **The template references `ghcr.io/gajesh2007/ai-trading-agent:latest`**; if the maintainer has not yet published this image, build it locally:
+     ```bash
+     git clone https://github.com/Gajesh2007/ai-trading-agent && cd ai-trading-agent
+     docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .
+     ```
+   - After the container starts, access the diary API at `http://<unraid-ip>:3000/diary` and tail logs at `http://<unraid-ip>:3000/logs?path=llm_requests.log`
+   - **Security warning:** the API on port 3000 has no built-in authentication — keep it within your trusted network only
 
    **broccoli_surrealdb:**
    - `SURREAL_PASS`: required root password (must match `broccoli_open-notebook` `SURREAL_PASSWORD`)
@@ -556,6 +578,13 @@ These templates are suitable starting points for Claude Desktop, Cursor, VS Code
 
 <!-- TEMPLATES:START -->
 This repository provides Unraid Docker templates and matching icons for self-hosted apps.
+
+### `broccoli_ai-trading-agent`
+<img src="https://avatars.githubusercontent.com/gajesh2007?v=4" alt="broccoli_ai-trading-agent icon" width="64">
+
+- Template: `templates/broccoli_ai-trading-agent.xml`
+- Container image: `ghcr.io/gajesh2007/ai-trading-agent:latest`
+- Nocturne — AI trading agent for Hyperliquid. Uses an LLM (via OpenRouter) to analyse real-time TAAPI technical indicators and make buy/sell/hold decisions in a continuous loop with take-profit and stop-loss orders. Requires TAAPI_API_KEY, HYPERLIQUID_PRIVATE_KEY, OPENROUTER_API_KEY, ASSETS, and INTERVAL. API on port 3000: GET /diary (trade decisions), GET /logs (log tail). Use HYPERLIQUID_NETWORK=testnet to validate before live trading. If the GHCR image is not yet published, build locally: git clone https://github.com/Gajesh2007/ai-trading-agent && docker build --platform linux/amd64 -t ghcr.io/gajesh2007/ai-trading-agent:latest .
 
 ### `broccoli_github-mcp-server`
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="broccoli_github-mcp-server icon" width="64">
