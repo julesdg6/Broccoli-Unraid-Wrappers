@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>broccoli_splittarr</Name>
+  <Repository>gnarr/splittarr:latest</Repository>
+  <Registry>https://hub.docker.com/r/gnarr/splittarr</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/gnarr/splittarr/issues</Support>
+  <Project>https://github.com/gnarr/splittarr</Project>
+  <Overview>Splittarr splits single-file albums with CUE sheets into FLAC tracks for Lidarr when an import fails, then removes only its generated tracks after Lidarr imports them. Configure the Lidarr URL and API key. The Splittarr download mount must use the exact same container path Lidarr reports for downloads, and must be writable. The built-in web UI has no authentication; keep it on a trusted network and do not expose it publicly.</Overview>
+  <Category>MediaApp:Audio</Category>
+  <WebUI>http://[IP]:[PORT:9899]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/julesdg6/Broccoli-Unraid-Wrappers/main/templates/broccoli_splittarr.xml</TemplateURL>
+
+  <Config Name="Web UI Port" Target="9899" Default="9899" Mode="tcp" Description="Container Port: 9899 — Splittarr web UI (no authentication)" Type="Port" Display="always" Required="true" Mask="false">9899</Config>
+
+  <Config Name="AppData" Target="/config" Default="/mnt/user/appdata/broccoli_splittarr" Mode="rw" Description="Persistent Splittarr database and configuration" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/broccoli_splittarr</Config>
+  <Config Name="Downloads" Target="/data" Default="/mnt/user/downloads" Mode="rw" Description="Must be writable and mapped to the exact same container path Lidarr reports for the failed download. Change the container path if Lidarr uses a different one." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/downloads</Config>
+
+  <Config Name="Lidarr URL" Target="SPLITTARR_LIDARR__URL" Default="" Mode="" Description="Required. Lidarr base URL reachable from this container (for example, http://&lt;unraid-ip&gt;:8686 or http://lidarr:8686 on a shared user-defined network)." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+  <Config Name="Lidarr API Key" Target="SPLITTARR_LIDARR__API_KEY" Default="" Mode="" Description="Required. Lidarr API key from Settings → General." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Bind Address" Target="SPLITTARR_SERVER__BIND_ADDRESS" Default="0.0.0.0:9899" Mode="" Description="Listen on all container interfaces so the mapped web UI port is reachable." Type="Variable" Display="always" Required="true" Mask="false">0.0.0.0:9899</Config>
+  <Config Name="Data Directory" Target="SPLITTARR_DATA_DIR" Default="/config" Mode="" Description="Directory for Splittarr's SQLite database; keep this on the persistent AppData mount." Type="Variable" Display="advanced" Required="true" Mask="false">/config</Config>
+</Container>
