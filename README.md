@@ -599,6 +599,12 @@ This repository provides Unraid Docker templates and matching icons for self-hos
 - Container image: `lfnovo/open_notebook:v1-latest`
 - Privacy-focused NotebookLM alternative. Uses upstream v1-latest image with separated SurrealDB and starts Open Notebook MCP in the same container. Exposes Web UI on 8502, API on 5055, and MCP Streamable HTTP on 5056 (/mcp). Persist /app/data and keep OPEN_NOTEBOOK_ENCRYPTION_KEY stable across upgrades so provider credentials and model settings survive updates.
 
+### `broccoli_splittarr`
+
+- Template: `templates/broccoli_splittarr.xml`
+- Container image: `gnarr/splittarr:latest`
+- Splittarr splits single-file albums with CUE sheets into FLAC tracks for Lidarr when an import fails, then removes only its generated tracks after Lidarr imports them. Configure the Lidarr URL and API key. The Splittarr download mount must use the exact same container path Lidarr reports for downloads, and must be writable. The built-in web UI has no authentication; keep it on a trusted network and do not expose it publicly.
+
 ### `broccoli_stealth-browser-mcp`
 <img src="https://raw.githubusercontent.com/vibheksoni/stealth-browser-mcp/master/media/UndetectedStealthBrowser.png" alt="broccoli_stealth-browser-mcp icon" width="64">
 
